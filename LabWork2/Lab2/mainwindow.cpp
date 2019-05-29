@@ -8,27 +8,28 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    for(int i = 0; i < 10; ++i)
+    //initialize labels with empty strings
+    for(int i = 0; i < MAXSIZE; ++i)
     {
         QVector<QLabel*> l;
-        labels[i].push_back(l);
-        labels[i].resize(10);
-        for(int j = 0; j < 10; ++j)
+        labels.push_back(l);
+        for(int j = 0; j < MAXSIZE; ++j)
         {
-            labels[j][j] = new QLabel;
+            labels[i].push_back(new QLabel);
+            labels[i][j]->setFixedSize(20, 10);
         }
     }
 }
 
 MainWindow::~MainWindow()
 {
-    /*for(int i = 0; i < MAXSIZE; ++i)
+    for(int i = 0; i < MAXSIZE; ++i)
     {
         for(int j = 0; j < MAXSIZE; ++j)
         {
             delete labels[i][j];
         }
-    }*/
+    }
     delete ui;
 }
 
@@ -48,14 +49,22 @@ void MainWindow::on_numberOfVertexes_currentIndexChanged(int index)
 void MainWindow::printMatrix(QVector<QVector<int>> matrix)
 {
     graph = matrix;
+    clearLabels(); //clear previous text
     for(int i = 0; i < n; ++i)
     {
         for(int j = 0; j < n; ++j)
         {
-            labels[i][j]->setFixedSize(20, 10);
             labels[i][j]->setText(QString::number(matrix[i][j]));
             ui->matrixGrid->addWidget(labels[i][j], i, j);
         }
+    }
+}
+
+void MainWindow::clearLabels()
+{
+    for(int i = 0; i < MAXSIZE; ++i)
+    {
+        for(int j = 0; j < MAXSIZE; ++j) labels[i][j]->setText("");
     }
 }
 
@@ -65,17 +74,10 @@ void MainWindow::on_randomButton_clicked()
     graph.resize(n);
     for(int i = 0; i < n; ++i) graph[i].resize(n);
 
+    qsrand(QDateTime::currentMSecsSinceEpoch());
     for(int i = 0; i < n; ++i)
     {
-        srand(static_cast<unsigned int>(time(nullptr)));
-        int j = 0;
-
-        /*if graph is undirecteed then need to generate only half of the matrix
-        the rest will bw symmetric*/
-        if(!directed) j = i;
-        else j = 0;
-
-        for(j; j < n; ++j)
+        for(int j = 0; j < n; ++j)
         {
             //in order to avoid loops
             if(j == i) graph[i][j] = 0;
@@ -83,12 +85,22 @@ void MainWindow::on_randomButton_clicked()
             {
                 if(weighted)
                 {
-                    graph[j][i] = graph[i][j] = rand()%10;
+                   graph[i][j] = qrand()%10;
                 }
-                else  graph[j][i] = graph[i][j] = rand()%2;
+                else graph[i][j] = qrand()%2;
             }
         }
     }
+    /*if graph is undirecteed then need to generate only half of the matrix
+    the rest will bw symmetric*/
+    if(!directed)
+    {
+        for(int i = 0; i < n; ++i)
+        {
+            for(int j = i; j < n; ++j) graph[i][j] = graph[j][i];
+        }
+    }
+
     printMatrix(graph);
 }
 
@@ -102,4 +114,35 @@ void MainWindow::on_weightedGraph_stateChanged(int arg1)
 {
     if(arg1 == Qt::Checked) weighted = true;
     else weighted = false;
+}
+
+void MainWindow::illustrate()
+{
+    QDirIterator it("LabWorksSem2//LabWork2//Lab2//Images//", QDirIterator::NoIteratorFlags);
+    int i = 0;
+    while (it.hasNext())
+    {
+        if(i > 1)
+        {
+            setPicture(it.next());
+            QTime time;
+            time.start();
+            for(;time.elapsed() < 500;) {
+                QApplication::processEvents(nullptr);
+            }
+        }
+        ++i;
+    }
+}
+
+void MainWindow::setPicture(QString path)
+{
+    QPixmap image(path);
+    ui->graphLabel->setPixmap(image);
+    ui->graphLabel->setScaledContents(true);
+}
+
+void MainWindow::on_Run_clicked()
+{
+    illustrate();
 }
