@@ -8,11 +8,27 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
+    for(int i = 0; i < 10; ++i)
+    {
+        QVector<QLabel*> l;
+        labels[i].push_back(l);
+        labels[i].resize(10);
+        for(int j = 0; j < 10; ++j)
+        {
+            labels[j][j] = new QLabel;
+        }
+    }
 }
 
 MainWindow::~MainWindow()
 {
+    /*for(int i = 0; i < MAXSIZE; ++i)
+    {
+        for(int j = 0; j < MAXSIZE; ++j)
+        {
+            delete labels[i][j];
+        }
+    }*/
     delete ui;
 }
 
@@ -36,10 +52,9 @@ void MainWindow::printMatrix(QVector<QVector<int>> matrix)
     {
         for(int j = 0; j < n; ++j)
         {
-            QLabel *ql = new QLabel;
-            ql->setFixedSize(20, 10);
-            ql->setText(QString::number(matrix[i][j]));
-            ui->matrixGrid->addWidget(ql, i, j);
+            labels[i][j]->setFixedSize(20, 10);
+            labels[i][j]->setText(QString::number(matrix[i][j]));
+            ui->matrixGrid->addWidget(labels[i][j], i, j);
         }
     }
 }

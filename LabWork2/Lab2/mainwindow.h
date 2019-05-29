@@ -5,6 +5,7 @@
 
 #include <QMainWindow>
 #include <QRandomGenerator>
+#include <QLabel>
 #include <ctime>
 
 namespace Ui {
@@ -26,10 +27,14 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    const int MAXSIZE = 10;
+
     int n; //number for vertexes
     bool weighted = false; //whether graph is weighted or not
     bool directed = false; //whether graph is directed or not
     QVector<QVector<int>> graph; //matrix n*n that represent graph
+
+    QVector<QVector<QLabel*>> labels; //labels of the printed matrix
 
 private slots:
     void printMatrix(QVector<QVector<int>>); //print matrix in the matrix grid
