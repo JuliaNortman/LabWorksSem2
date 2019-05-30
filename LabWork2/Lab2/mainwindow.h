@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "matrix.h"
+#include "writeinfile.h"
 
 #include <QMainWindow>
 #include <QRandomGenerator>
@@ -45,6 +46,8 @@ private slots:
     void on_enterMatrixPushButton_clicked();
 
     void on_numberOfVertexes_currentIndexChanged(int index);
+    void stopChanging(); //is called after prev or next button is clicked in order to stop automatic changes of the pictures
+    bool stop();
 };
 
 #endif // MAINWINDOW_H

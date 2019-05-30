@@ -19,6 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
             labels[i][j]->setFixedSize(20, 10);
         }
     }
+
+    //hiding buttons
+    ui->prevPushButton->hide();
+    ui->nextPushButton->hide();
 }
 
 MainWindow::~MainWindow()
@@ -120,7 +124,7 @@ void MainWindow::illustrate()
 {
     QDirIterator it("LabWorksSem2//LabWork2//Lab2//Images//", QDirIterator::NoIteratorFlags);
     int i = 0;
-    while (it.hasNext())
+    while (it.hasNext() && !stop())
     {
         if(i > 1)
         {
@@ -144,5 +148,18 @@ void MainWindow::setPicture(QString path)
 
 void MainWindow::on_Run_clicked()
 {
+    Graph g(graph, directed, weighted);
+    WriteInFile f(g);
     illustrate();
+}
+
+void MainWindow::stopChanging()
+{
+
+}
+
+bool MainWindow::stop()
+{
+    static bool st = false;
+    return st;
 }

@@ -27,11 +27,13 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    matrix.cpp
+    matrix.cpp \
+    writeinfile.cpp
 
 HEADERS += \
         mainwindow.h \
-    matrix.h
+    matrix.h \
+    writeinfile.h
 
 FORMS += \
         mainwindow.ui \
