@@ -27,7 +27,6 @@ public:
     BFS(Graph &graph) : GraphAlgorithm (graph) {setSourceVertex(0);}
     BFS(Graph &graph, int source) : GraphAlgorithm (graph) {setSourceVertex(source);}
     void executeAlgorithm();
-
 };
 
 
@@ -38,6 +37,15 @@ public:
     DFS(Graph &graph, int source) : GraphAlgorithm (graph) {setSourceVertex(source);}
     void executeAlgorithm();
 };
+
+class ConnectedComponents : public GraphAlgorithm
+{
+public:
+    ConnectedComponents(Graph &graph) : GraphAlgorithm (graph) {setSourceVertex(0);}
+    ConnectedComponents(Graph &graph, int source) : GraphAlgorithm (graph) {setSourceVertex(source);}
+    void executeAlgorithm();
+};
+
 
 
 
