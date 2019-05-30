@@ -14,6 +14,7 @@ private:
     bool hasSymmectricMatrix() const;
     bool hasSquareMatrix() const;
     void deleteLoops();
+    void correctGraph(); ///< Makes graph matrix square and symmetric (if not oriented), delete loops.
 
 public:
     QVector<QVector<int>> graph;
@@ -21,15 +22,7 @@ public:
     bool oriented = false;
 
     Graph() = default;
-    Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted)
-    {
-        this->graph = graph;
-        this->oriented = oriented;
-        this->weighted = weighted;
-    }
-
-    //void autoCompleteGraph();
-
+    Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted);
 };
 
 #endif // GRAPH_H

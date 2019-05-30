@@ -1,5 +1,17 @@
 #include "graph.h"
 
+Graph::Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted)
+{
+    this->graph = graph;
+    this->oriented = oriented;
+    this->weighted = weighted;
+    if (!isCorrectGraph())
+    {
+        correctGraph();
+    }
+}
+
+
 bool Graph::isCorrectGraph() const
 {
     if (!hasSquareMatrix()) return false;
@@ -60,3 +72,35 @@ void Graph::deleteLoops()
             graph[i][i] = 0;
     }
 }
+
+void Graph::correctGraph()
+{
+    int largestDimention = graph.size();
+    for (auto v : graph)                    ///< Getting largest dimention of the table (still not matrix.
+    {
+        if (v.size() > largestDimention)
+        {
+            largestDimention = v.size();
+        }
+    }
+
+    const int matrixPlaceHolder = 0; ///< Can be set by pregrammer depending on tasks the structure needed for.
+    graph.resize(largestDimention);  ///< Making matrix square and filling new cells with placeholder.
+    for (auto v : graph)
+    {
+        while(v.size() != largestDimention)
+        {
+            v.push_back(matrixPlaceHolder);
+        }
+    }
+
+    deleteLoops(); ///< According to the conditions loops do not exist, so delete them.
+
+    if (!oriented)              ///< If oriented, matrix is symmetric.
+    {                           ///< Refletcting elements of upper-right triangle relatively to main diagonal.
+        for (int i=0; i<graph.size(); i++)
+            for (int j=0; j<graph.size(); j++)
+                graph[j][i] = graph[i][j];
+    }
+}
+
