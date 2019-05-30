@@ -2,6 +2,7 @@
 #define GRAPH_H
 
 #include<QVector>
+#include<QStack>
 
 /**
 * Whatever matrix it be, it can be interpretated as a graph.
@@ -20,11 +21,11 @@ public:
     QVector<QVector<int>> graph;
     bool weighted = false;
     bool oriented = false;
+    const int NO_EDGE = 0;
 
     Graph() = default;
     Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted);
-
-    const int NO_EDGE = 0;
+    bool hasCycle() const;
 };
 
 #endif // GRAPH_H

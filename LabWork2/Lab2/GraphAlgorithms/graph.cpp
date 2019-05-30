@@ -102,3 +102,60 @@ void Graph::correctGraph()
                 graph[j][i] = graph[i][j];
     }
 }
+
+
+bool Graph::hasCycle() const
+{
+    int source = 0; // get source vertex
+    int sizeGraph = graph.size(); //get size of graph
+
+    QVector<bool> visited(sizeGraph, false); //visited vertices
+    QStack<int> stack; //stack of current vertices to concern
+    QVector<int> used(sizeGraph, false); //set of used vetrices
+
+    bool notAllVertUsed = true;
+    stack.push(source);
+    while(notAllVertUsed)
+    {
+        while(!stack.empty())
+        {
+            source = stack.top();
+            stack.pop();
+            used[source] = true;
+
+            if (!visited[source])
+            {
+                visited[source] = true;
+            }
+            else
+            {
+                return true;
+            }
+
+            for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+            {
+                if (graph[source][adj_v] != NO_EDGE) //if an edge exists
+                {
+                    if (!visited[adj_v]) // if still not visited
+                    {
+                       stack.push(adj_v);
+                    }
+                }
+            }
+        }
+
+        //find any still not used vertes (not from previous connectivity component)
+        int indNotUsedVert = 0;
+        for (; indNotUsedVert<sizeGraph; indNotUsedVert++)
+        {
+            if (!used[indNotUsedVert]) break;
+        }
+        if (indNotUsedVert==sizeGraph)
+        {
+            return false;
+        }
+        stack.push(indNotUsedVert);
+    }
+
+    return false;
+}
