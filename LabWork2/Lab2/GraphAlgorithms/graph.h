@@ -25,7 +25,9 @@ public:
 
     Graph() = default;
     Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted);
+    
     bool hasCycle() const;
+    bool hasNegativeWeightEdge() const;
 };
 
 #endif // GRAPH_H

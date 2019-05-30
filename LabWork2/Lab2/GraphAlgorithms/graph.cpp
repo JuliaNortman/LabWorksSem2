@@ -159,3 +159,11 @@ bool Graph::hasCycle() const
 
     return false;
 }
+
+bool Graph::hasNegativeWeightEdge() const
+{
+    for (auto row : graph)
+        for (auto elem : row)
+            if (elem<0 && elem!=NO_EDGE) return true;
+    return false;
+}
