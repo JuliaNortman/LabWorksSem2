@@ -23,6 +23,8 @@ public:
 
     Graph() = default;
     Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted);
+
+    const int NO_EDGE = 0;
 };
 
 #endif // GRAPH_H

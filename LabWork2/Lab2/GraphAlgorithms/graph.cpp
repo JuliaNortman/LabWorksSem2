@@ -76,7 +76,7 @@ void Graph::deleteLoops()
 void Graph::correctGraph()
 {
     int largestDimention = graph.size();
-    for (auto v : graph)                    ///< Getting largest dimention of the table (still not matrix.
+    for (auto v : graph)                    ///< Getting largest dimention of the table (still not matrix).
     {
         if (v.size() > largestDimention)
         {
@@ -84,13 +84,12 @@ void Graph::correctGraph()
         }
     }
 
-    const int matrixPlaceHolder = 0; ///< Can be set by pregrammer depending on tasks the structure needed for.
-    graph.resize(largestDimention);  ///< Making matrix square and filling new cells with placeholder.
+    graph.resize(largestDimention);  ///< Making matrix square and filling new cells with NO_EDGE.
     for (auto v : graph)
     {
         while(v.size() != largestDimention)
         {
-            v.push_back(matrixPlaceHolder);
+            v.push_back(NO_EDGE);
         }
     }
 
@@ -103,4 +102,3 @@ void Graph::correctGraph()
                 graph[j][i] = graph[i][j];
     }
 }
-
