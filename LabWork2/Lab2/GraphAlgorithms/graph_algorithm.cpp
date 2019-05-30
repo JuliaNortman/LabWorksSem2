@@ -1,11 +1,25 @@
 #include <QQueue>
+#include <QVector>
+#include <QStack>
 #include "graph_algorithm.h"
 
 #include<iostream>
 
+void GraphAlgorithm::setSourceVertex(int source)
+{
+    int sizeGraph = graphInput.graph.size();
+    if (source>=sizeGraph || source<0)
+    {
+        s = 0;
+        return;
+    }
+
+    s = source; //return;
+}
+
 void BFS::executeAlgorithm()
 {
-    int source = 0;
+    int source = s;
     int sizeGraph = graphInput.graph.size();
     bool *visited = new bool[sizeGraph];
     for (int i=0; i<sizeGraph; i++)
@@ -40,3 +54,44 @@ void BFS::executeAlgorithm()
 
     delete [] visited;
 }
+
+
+void DFS::executeAlgorithm()
+{
+    int source = s;
+    int sizeGraph = graphInput.graph.size();
+
+    QVector<bool> visited(sizeGraph, false);
+
+    QStack<int> stack;
+
+    stack.push(source);
+    while(!stack.empty())
+    {
+        source = stack.top();
+        stack.pop();
+
+        if (!visited[source])
+        {
+            //writeOperation()
+            std::cout<<source;
+            visited[source] = true;
+        }
+
+        for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+        {
+            if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
+            {
+                if (!visited[adj_v]) // if still not visited
+                {
+                   stack.push(adj_v);
+                }
+            }
+        }
+    }
+
+}
+
+
+
+
