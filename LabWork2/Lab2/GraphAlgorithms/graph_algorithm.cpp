@@ -22,12 +22,9 @@ void BFS::executeAlgorithm()
 {
     int source = s;
     int sizeGraph = graphInput.graph.size();
-    bool *visited = new bool[sizeGraph];
-    for (int i=0; i<sizeGraph; i++)
-    {
-        visited[i] = false;
-    }
+    QVector<bool> visited(sizeGraph, false);
 
+    const int color = 0;// color number less than COLORS_VECTOR_SIZE
     QQueue<int> queue;
     visited[source] = true;
     queue.push_back(source);
@@ -35,11 +32,8 @@ void BFS::executeAlgorithm()
     while(!queue.empty())
     {
         source = queue.front();
-        //writeOperation;
-        std::cout<<source; //debugiing
-
+        writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
         queue.pop_front();
-
         for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
         {
             if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
@@ -52,8 +46,6 @@ void BFS::executeAlgorithm()
             }
         }
     }
-
-    delete [] visited;
 }
 
 
@@ -61,9 +53,9 @@ void DFS::executeAlgorithm()
 {
     int source = s;
     int sizeGraph = graphInput.graph.size();
+    const int color = 0; //color number less than COLORS_VECTOR_SIZE
 
     QVector<bool> visited(sizeGraph, false);
-
     QStack<int> stack;
 
     stack.push(source);
@@ -74,8 +66,7 @@ void DFS::executeAlgorithm()
 
         if (!visited[source])
         {
-            //writeOperation()
-            std::cout<<source;
+            writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
             visited[source] = true;
         }
 
@@ -90,7 +81,6 @@ void DFS::executeAlgorithm()
             }
         }
     }
-
 }
 
 
@@ -297,7 +287,4 @@ void ShortestPathes::executeAlgorithm()
 
     }
     //else weighted
-
-
-
 }

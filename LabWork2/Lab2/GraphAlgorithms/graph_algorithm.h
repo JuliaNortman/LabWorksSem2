@@ -1,8 +1,14 @@
 #ifndef GRAPH_ALGORITHM_H
 #define GRAPH_ALGORITHM_H
 
+#include<QVector>
+#include<QString>
 #include "graph.h"
+#include "writeinfile.h"
 
+const int COLORS_VECTOR_SIZE = 10;
+const QVector<QString> COLORS_VECTOR{"#CA3434", "#E18A27", "#F6EE0D", "#11F60D", "#0DF6EA",
+                                     "#0D66F6","#950DF6", "#F60DEE", "#66F60D", "#E3C2BF"};
 
 /**
 * Abstract class.
@@ -12,8 +18,7 @@ class GraphAlgorithm
 protected:
     Graph graphInput;
     int s = 0; //source
-    //writeInFile *fileHandler = NULL;
-    //virtual void shareAlgoStep()= 0;
+    WriteInFile *writeFileHandler; //=NULL;
     void setSourceVertex(int source);
 public:
     GraphAlgorithm(Graph &graph) : graphInput(graph){}
@@ -25,8 +30,16 @@ public:
 class BFS : public GraphAlgorithm
 {
 public:
-    BFS(Graph &graph) : GraphAlgorithm (graph) {setSourceVertex(0);}
-    BFS(Graph &graph, int source) : GraphAlgorithm (graph) {setSourceVertex(source);}
+    BFS(Graph &graph) : GraphAlgorithm (graph)
+    {
+        writeFileHandler = new WriteVertexInFile (graph);
+        setSourceVertex(0);
+    }
+    BFS(Graph &graph, int source) : GraphAlgorithm (graph)
+    {
+        writeFileHandler = new WriteVertexInFile (graph);
+        setSourceVertex(source);
+    }
     void executeAlgorithm();
 };
 
@@ -34,8 +47,16 @@ public:
 class DFS : public GraphAlgorithm
 {
 public:
-    DFS(Graph &graph) : GraphAlgorithm (graph) {setSourceVertex(0);}
-    DFS(Graph &graph, int source) : GraphAlgorithm (graph) {setSourceVertex(source);}
+    DFS(Graph &graph) : GraphAlgorithm (graph)
+    {
+        writeFileHandler = new WriteVertexInFile (graph);
+        setSourceVertex(0);
+    }
+    DFS(Graph &graph, int source) : GraphAlgorithm (graph)
+    {
+        writeFileHandler = new WriteVertexInFile (graph);
+        setSourceVertex(source);
+    }
     void executeAlgorithm();
 };
 
@@ -64,6 +85,9 @@ public:
 };
 
 
+/**
+* Only for unweighted graphs.
+*/
 class ShortestPathes : public GraphAlgorithm
 {
 public:
