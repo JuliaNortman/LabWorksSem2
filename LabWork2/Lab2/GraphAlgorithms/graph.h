@@ -3,6 +3,8 @@
 
 #include<QVector>
 #include<QStack>
+#include<QQueue>
+#include<QtAlgorithms>
 
 /**
 * Whatever matrix it be, it can be interpretated as a graph.
@@ -16,6 +18,7 @@ private:
     bool hasSquareMatrix() const;
     void deleteLoops();
     void correctGraph(); ///< Makes graph matrix square and symmetric (if not oriented), delete loops.
+    void transponse();
 
 public:
     QVector<QVector<int>> graph;
@@ -25,9 +28,12 @@ public:
 
     Graph() = default;
     Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted);
-    
+
     bool hasCycle() const;
     bool hasNegativeWeightEdge() const;
+    QVector<int> BFSfrom(int source=0) const;
+    QVector<int> DFSfrom(int source=0) const;
+    bool isConnected();
 };
 
 #endif // GRAPH_H

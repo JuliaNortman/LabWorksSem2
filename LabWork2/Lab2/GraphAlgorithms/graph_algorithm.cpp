@@ -254,3 +254,8 @@ void DetectCycle::executeAlgorithm()
         stack.push(indNotUsedVert);
     }
 }
+
+void ShortestPathes::executeAlgorithm()
+{
+
+}

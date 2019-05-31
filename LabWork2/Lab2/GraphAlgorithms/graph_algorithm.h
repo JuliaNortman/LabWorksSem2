@@ -62,7 +62,7 @@ public:
     void executeAlgorithm();
 };
 
-/*
+
 class ShortestPathes : public GraphAlgorithm
 {
 public:
@@ -70,6 +70,6 @@ public:
     ShortestPathes (Graph &graph, int source) : GraphAlgorithm (graph) {setSourceVertex(source);}
     void executeAlgorithm();
 };
-*/
+
 
 #endif // GRAPH_ALGORITHM_H

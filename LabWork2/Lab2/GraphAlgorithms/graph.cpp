@@ -167,3 +167,132 @@ bool Graph::hasNegativeWeightEdge() const
             if (elem<0 && elem!=NO_EDGE) return true;
     return false;
 }
+
+
+QVector<int> Graph::BFSfrom(int source) const
+{
+    QVector<int> BFSResult;
+    int sizeGraph = graph.size();
+    if (source >= sizeGraph || source<0)
+    {
+        //throw "Incorrect source";
+        return BFSResult; //return empty vector
+    }
+
+    //else
+    QVector<bool> visited(sizeGraph, false);
+    QQueue<int> queue;
+    visited[source] = true;
+    BFSResult.push_back(source);
+    queue.push_back(source);
+
+    while(!queue.empty())
+    {
+        source = queue.front();
+        queue.pop_front();
+
+        for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+        {
+            if (graph[source][adj_v] != NO_EDGE) //if an edge exists
+            {
+                if (!visited[adj_v]) // if still not visited
+                {
+                    visited[adj_v] = true;
+                    BFSResult.push_back(adj_v);
+                    queue.push_back(adj_v);
+                }
+            }
+        }
+    }
+
+    return BFSResult;
+}
+
+
+QVector<int> Graph::DFSfrom(int source) const
+{
+    QVector<int> DFSResult;
+    int sizeGraph = graph.size();
+    if (source>=sizeGraph || source<0)
+    {
+        return DFSResult; //return empty vector
+        //throw "Incorrect source";
+    }
+
+    QVector<bool> visited(sizeGraph, false);
+    QStack<int> stack;
+    stack.push(source);
+
+    while(!stack.empty())
+    {
+        source = stack.top();
+        stack.pop();
+
+        if (!visited[source])
+        {
+            visited[source] = true;
+            DFSResult.push_back(source);
+        }
+
+        for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+        {
+            if (graph[source][adj_v] != NO_EDGE) //if an edge exists
+            {
+                if (!visited[adj_v]) // if still not visited
+                {
+                   stack.push(adj_v);
+                }
+            }
+        }
+    }
+
+    return DFSResult;
+
+}
+
+
+//only for square matrix
+void Graph::transponse()
+{
+    int sizeGraph = graph.size();
+    for (int v = 0; v < sizeGraph; v++)
+        for (int adj_v = v; adj_v < sizeGraph; adj_v++)
+            qSwap(graph[adj_v][v], graph[v][adj_v]); //got transonsed matrix
+
+}
+
+bool Graph::isConnected()
+{
+    if (!oriented) //start BFS from any vertex (from source)
+    {
+        QVector<int> BFStraverse = BFSfrom();
+        if (BFStraverse.size() == graph.size())
+        {
+            return true;
+        }
+        else return false;
+    }
+    else //if oriented, check if strongly connected
+    {
+        QVector<int> DFStraverse = DFSfrom(0);
+        if (DFStraverse.size() != graph.size())
+        {
+            return false;
+        }
+
+        transponse();
+
+        bool isConnected = false;
+        DFStraverse.clear();
+        DFStraverse = DFSfrom(0);
+        if (DFStraverse.size() == graph.size())
+        {
+            return true;
+        }
+        transponse(); // set matrix back
+
+        return isConnected;
+    }
+
+    //return true;
+}
