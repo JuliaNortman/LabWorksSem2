@@ -27,22 +27,21 @@ public:
     const int NO_EDGE = 0;
 };
 
-class Data
+
+
+class Vertex
 {
 public:
     QString label; //additional mark on the vertex
     QString color; //color in which vertex will be printed
-};
-
-class Vertex :public Data
-{
-public:
     QString vertex;
 };
 
-class Edge :public Data
+class Edge
 {
 public:
+    QString label; //additional mark on the vertex
+    QString color; //color in which vertex will be printed
     QString from; //start of the edge
     QString to; //end of the edge
 };
@@ -53,6 +52,7 @@ public:
     WriteInFile(const Graph& G);
     virtual ~WriteInFile() = default;
     virtual void write(void*) = 0;
+    void createImage();
 };
 
 class WriteEdgeInFile :public WriteInFile

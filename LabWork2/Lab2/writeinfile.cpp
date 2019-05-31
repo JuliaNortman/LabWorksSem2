@@ -3,7 +3,7 @@
 WriteInFile::WriteInFile(const Graph& G)
 {
     //creating file
-    QString path = "LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat";
+    QString path = "LabWorksSem2\\LabWork2\\Lab2\\Files\\graphviz.dat";
     QFile file(path);
     file.remove(); //removes file if it existed before
     if(!file.open(QIODevice::ReadWrite)) //open file
@@ -91,6 +91,8 @@ void WriteEdgeInFile::write(void* e)
     file.remove();
     temp.close();
     temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
+    createImage();
+    qDebug("After image");
 }
 
 void WriteVertexInFile::write(void* v)
@@ -129,4 +131,18 @@ void WriteVertexInFile::write(void* v)
     file.remove();
     temp.close();
     temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
+}
+
+void WriteInFile::createImage()
+{
+    QString comman_str = "";
+    QString filePath = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\LabWorksSem2\\LabWork2\\Lab2\\Files\\graphviz.dot";
+    QString imagePath = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\LabWorksSem2\\LabWork2\\Lab2\\Images\\img.png";
+    QString graphvizPath = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\LabWorksSem2\\LabWork2\\Lab2\\Graphviz\\release\\bin\\dot.exe";
+    //comman_str += "..\\TreeVisualizer\\graphviz\\bin\\dot.exe  -Tpng " + name_str + " -o step_" + std::to_string(global_value - 1) + ".png";
+    QString myPath = graphvizPath +  " -v"  + " -o " + imagePath + "-T png " + filePath;
+    qDebug(myPath.toStdString().c_str());
+    system(myPath.toStdString().c_str());
+    //system(graphvizPath.toStdString().c_str());
+    //system(myPath.);
 }
