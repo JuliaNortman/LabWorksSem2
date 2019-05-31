@@ -149,7 +149,12 @@ void MainWindow::setPicture(QString path)
 void MainWindow::on_Run_clicked()
 {
     Graph g(graph, directed, weighted);
-    WriteInFile f(g);
+    WriteVertexInFile f(g);
+    Vertex v;
+    v.vertex = "1";
+    v.color = "blue";
+    f.write(v);
+
     illustrate();
 }
 

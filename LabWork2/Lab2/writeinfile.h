@@ -52,19 +52,20 @@ class WriteInFile
 public:
     WriteInFile(const Graph& G);
     virtual ~WriteInFile() = default;
-    virtual void write(const Data&) = 0;
+    virtual void write(const Vertex&) = 0;
 };
 
-class WriteEdgeInFile :public WriteInFile
+/*class WriteEdgeInFile :public WriteInFile
 {
 public:
-    void write(const Data&) override;
-};
+    void write(const Edge&);
+};*/
 
 class WriteVertexInFile :public WriteInFile
 {
 public:
-    void write(const Data&) override;
+    WriteVertexInFile(const Graph& G): WriteInFile(G){}
+    void write(const Vertex&);
 };
 
 #endif // WRITEINFILE_H

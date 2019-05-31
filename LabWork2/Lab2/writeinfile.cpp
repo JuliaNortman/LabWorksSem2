@@ -12,7 +12,7 @@ WriteInFile::WriteInFile(const Graph& G)
     }
 
     file.write("digraph G {\n");
-    file.write("node[shape=\"circle\"];\n"); //sets shapes of all nodes
+    file.write("node[shape=\"circle\",style=\"filled\"];\n"); //sets shapes of all nodes
 
     for(int i = 0; i < G.graph.size();++i)
     {
@@ -47,4 +47,44 @@ WriteInFile::WriteInFile(const Graph& G)
 
     file.write("}");
     file.close();
+}
+
+/*void WriteEdgeInFile::write(const Edge &d)
+{
+}*/
+
+void WriteVertexInFile::write(const Vertex &d)
+{
+    QString path = "LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat";
+    QString path2  = "LabWorksSem2//LabWork2//Lab2//Files//temp.dat";
+    QFile file(path);
+    QFile temp(path2);
+    if(!file.open(QIODevice::ReadOnly)) //open file
+    {
+        qDebug("Not open");
+        return;
+    }
+    if(!temp.open(QIODevice::WriteOnly)) //open file
+    {
+        qDebug("Not open temp");
+        return;
+    }
+    while(!file.atEnd())
+    {
+        QString line = file.readLine(); //read line from the graphviz.dat
+        QString vertex = line.split(";")[0].split("[")[0]; //in order to get vertex
+        qDebug(vertex.toStdString().c_str());
+        if(vertex != d.vertex)
+        {
+            temp.write(line.toStdString().c_str());
+        }
+        else
+        {
+            temp.write((d.vertex+"[color=\""+d.color+"\"];\n").toStdString().c_str());
+        }
+    }
+    file.close();
+    file.remove();
+    temp.rename("graphviz.dat");
+    temp.close();
 }
