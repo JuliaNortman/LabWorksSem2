@@ -92,7 +92,6 @@ void WriteEdgeInFile::write(void* e)
     temp.close();
     temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
     createImage();
-    qDebug("After image");
 }
 
 void WriteVertexInFile::write(void* v)
@@ -135,14 +134,8 @@ void WriteVertexInFile::write(void* v)
 
 void WriteInFile::createImage()
 {
-    QString comman_str = "";
-    QString filePath = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\LabWorksSem2\\LabWork2\\Lab2\\Files\\graphviz.dot";
-    QString imagePath = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\LabWorksSem2\\LabWork2\\Lab2\\Images\\img.png";
-    QString graphvizPath = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\LabWorksSem2\\LabWork2\\Lab2\\Graphviz\\release\\bin\\dot.exe";
-    //comman_str += "..\\TreeVisualizer\\graphviz\\bin\\dot.exe  -Tpng " + name_str + " -o step_" + std::to_string(global_value - 1) + ".png";
-    QString myPath = graphvizPath +  " -v"  + " -o " + imagePath + "-T png " + filePath;
-    qDebug(myPath.toStdString().c_str());
+    //comman_str += "..\\TreeVisualizer\\graphviz\\bin\\dot.exe  -T png " + name_str + " -o step_" + std::to_string(global_value - 1) + ".png";
+    QString myPath = " C:\\Users\\hp250\\documents\\2semester\\proga\\labs\\labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe -Tpng c:\\users\\hp250\\documents\\2semester\\proga\\labs\\labworkssem2\\labwork2\\lab2\\files\\graphviz.dat -o c:\\users\\hp250\\documents\\2semester\\proga\\labs\\labworkssem2\\labwork2\\lab2\\images\\img.png";
+            //graphvizPath + " -o " + imagePath  + "-Tpng " + filePath ;
     system(myPath.toStdString().c_str());
-    //system(graphvizPath.toStdString().c_str());
-    //system(myPath.);
 }
