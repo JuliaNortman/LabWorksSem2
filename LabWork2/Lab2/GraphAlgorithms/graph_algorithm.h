@@ -9,7 +9,7 @@
 const int COLORS_VECTOR_SIZE = 20; ///< Precise value of defined colors in COLORS_VECTOR, its size.
 /**
 * Defines different colors written in hexadecimal form in string type.
-* Used for vertices coloring. 
+* Used for vertices coloring.
 */
 const QVector<QString> COLORS_VECTOR{"#CA3434", "#E18A27", "#F6EE0D", "#11F60D", "#0DF6EA",
                                      "#0D66F6","#950DF6", "#F60DEE", "#66F60D", "#E3C2BF",
@@ -155,5 +155,26 @@ public:
     void executeAlgorithm();
 };
 
+/**
+* Works only for weighted undirected connected graphs.
+* Builds minimal spannin tree.
+* Derived from GraphAlgorithm class.
+* Relize Prim's or Krauskal's algorithm.
+*/
+class MinimalSpanningTree: public GraphAlgorithm
+{
+public:
+    MinimalSpanningTree(Graph &graph) : GraphAlgorithm (graph)
+    {
+        writeFileHandler = new WriteEdgeInFile (graph);
+        setSourceVertex(0);
+    }
+    MinimalSpanningTree (Graph &graph, int source) : GraphAlgorithm (graph)
+    {
+        writeFileHandler = new WriteEdgeInFile(graph);
+        setSourceVertex(source);
+    }
+    void executeAlgorithm();
+};
 
 #endif // GRAPH_ALGORITHM_H

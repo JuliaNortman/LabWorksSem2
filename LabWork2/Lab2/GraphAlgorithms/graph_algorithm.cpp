@@ -284,6 +284,11 @@ void ShortestPathes::executeAlgorithm()
 
     }
     //else weighted
+}
 
+
+void MinimalSpanningTree::executeAlgorithm()
+{
 
 }
+
