@@ -133,7 +133,9 @@ void MainWindow::illustrate()
             ui->prevPushButton->show();
             ui->nextPushButton->show();
 
-            setPicture(it->next());
+            QString str = it->next();
+            qDebug(str.toStdString().c_str());
+            setPicture(str);
             QTime time;
             time.start();
             for(;time.elapsed() < 800;) {
@@ -153,12 +155,14 @@ void MainWindow::setPicture(QString path)
 
 void MainWindow::on_Run_clicked()
 {
+    QDir dir("LabWorksSem2//LabWork2//Lab2//Images");
+    dir.removeRecursively();
+    dir.setPath("LabWorksSem2//LabWork2//Lab2");
+    dir.mkdir("Images");
+
     Graph g(graph, directed, weighted);
     WriteEdgeInFile f(g);
-    Edge v;
-    v.from = "1";
-    v.to = "2";
-    v.color = "blue";
+    Edge v(1, 2, "red");
     f.write(&v);
 
     illustrate();
@@ -175,7 +179,7 @@ bool MainWindow::stop()
     return st;
 }
 
-void MainWindow::on_prevPushButton_clicked()
+/*void MainWindow::on_prevPushButton_clicked()
 {
     changeAutomatically = false;
     int fileNumber = it->fileName().split(".")[0].toInt()-1;
@@ -188,7 +192,7 @@ void MainWindow::on_prevPushButton_clicked()
         setPicture(it->filePath());
         qDebug(it->filePath().toStdString().c_str());
     }
-}
+}*/
 
 void MainWindow::on_nextPushButton_clicked()
 {

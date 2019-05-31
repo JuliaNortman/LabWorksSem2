@@ -1,4 +1,6 @@
 #include "writeinfile.h"
+#include <windows.h>
+#include <winbase.h>
 
 Vertex::Vertex(int vertex, QString color, int label)
 {
@@ -9,7 +11,7 @@ Vertex::Vertex(int vertex, QString color, int label)
 
 Edge::Edge(int from, int to, QString color, int label)
 {
-    this->from =QString::number(from);
+    this->from = QString::number(from);
     this->to = QString::number(to);
     this->color = color;
     this->label = QString::number(label);
@@ -150,9 +152,15 @@ void WriteVertexInFile::write(void* v)
 void WriteInFile::createImage()
 {
     numberOfSteps++;
+    QString fileName = "";
+    if(numberOfSteps > 9) fileName = QString::number(numberOfSteps)+".png";
+    else fileName = "0"+QString::number(numberOfSteps)+".png";
+    QString pp = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\";
     QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
     QString filePath = "labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
-    QString imagePath = "labworkssem2\\labwork2\\lab2\\images\\"+QString::number(numberOfSteps)+".png";
+    QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+fileName;
     QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
-    system(myPath.toStdString().c_str());
+    //system(myPath.toStdString().c_str());
+    WinExec(myPath.toStdString().c_str(), SW_HIDE);
+  //  ShellExecuteW(NULL,NULL,"labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe"," -Tpng "+filePath+ " -o " + imagePath,"", "SW_HIDE");
 }
