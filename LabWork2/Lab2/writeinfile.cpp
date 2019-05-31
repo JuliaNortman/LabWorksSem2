@@ -49,12 +49,53 @@ WriteInFile::WriteInFile(const Graph& G)
     file.close();
 }
 
-/*void WriteEdgeInFile::write(const Edge &d)
+void WriteEdgeInFile::write(void* e)
 {
-}*/
+    Edge* d = static_cast<Edge*>(e);
+    QString path = "LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat";
+    QString path2  = "LabWorksSem2//LabWork2//Lab2//Files//temp.dat";
+    QFile file(path);
+    QFile temp(path2);
+    if(!file.open(QIODevice::ReadOnly)) //open file
+    {
+        qDebug("Not open");
+        return;
+    }
+    if(!temp.open(QIODevice::WriteOnly)) //open file
+    {
+        qDebug("Not open temp");
+        return;
+    }
+    while(!file.atEnd())
+    {
+        QString line = file.readLine(); //read line from the graphviz.dat
+        QString edge = d->from+"->"+d->to;
+        if(!line.contains(edge))
+        {
+            temp.write(line.toStdString().c_str());
+        }
+        else
+        {
+            QStringList list = line.split("]");
+            if(list.size() == 1) //there is no symbol ']' in the line
+            {
+                temp.write((edge+"[color=\""+d->color+"\"];\n").toStdString().c_str());
+            }
+            else
+            {
+                temp.write((list[0]+",color=\""+d->color+"\"];\n").toStdString().c_str());
+            }
+        }
+    }
+    file.close();
+    file.remove();
+    temp.close();
+    temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
+}
 
-void WriteVertexInFile::write(const Vertex &d)
+void WriteVertexInFile::write(void* v)
 {
+    Vertex* d = static_cast<Vertex*>(v);
     QString path = "LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat";
     QString path2  = "LabWorksSem2//LabWork2//Lab2//Files//temp.dat";
     QFile file(path);
@@ -73,18 +114,19 @@ void WriteVertexInFile::write(const Vertex &d)
     {
         QString line = file.readLine(); //read line from the graphviz.dat
         QString vertex = line.split(";")[0].split("[")[0]; //in order to get vertex
-        qDebug(vertex.toStdString().c_str());
-        if(vertex != d.vertex)
+        //qDebug(vertex.toStdString().c_str());
+        //qDebug(std::to_string(line.split(";").size()).c_str());
+        if(vertex != d->vertex)
         {
             temp.write(line.toStdString().c_str());
         }
         else
         {
-            temp.write((d.vertex+"[color=\""+d.color+"\"];\n").toStdString().c_str());
+            temp.write((d->vertex+"[color=\""+d->color+"\"];\n").toStdString().c_str());
         }
     }
     file.close();
     file.remove();
-    temp.rename("graphviz.dat");
     temp.close();
+    temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
 }

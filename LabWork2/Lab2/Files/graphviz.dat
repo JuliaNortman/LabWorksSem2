@@ -1,0 +1,6 @@
+digraph G {
+node[shape="circle",style="filled"];
+1;
+2;
+1->2[arrowhead="none",color="blue"];
+}
