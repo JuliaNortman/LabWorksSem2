@@ -93,9 +93,9 @@ void ConnectedComponents::executeAlgorithm()
     QStack<int> stack; //stack of current vertices to concern
     QVector<int> used(sizeGraph, false); //set of used vetrices
 
-    int color = 0; // used as color identifier
     bool notAllVertUsed = true;
     stack.push(source);
+    int color = 0; //color number less than COLORS_VECTOR_SIZE
     while(notAllVertUsed)
     {
         while(!stack.empty())
@@ -106,8 +106,7 @@ void ConnectedComponents::executeAlgorithm()
 
             if (!visited[source])
             {
-                //writeOperation()
-                std::cout<<source<<" "<<color;
+                writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color%COLORS_VECTOR_SIZE]));
                 visited[source] = true;
             }
 
@@ -147,7 +146,8 @@ void ColorGraph::executeAlgorithm()
     QVector<int> resultVerticsColors(sizeGraph, -1);
     int source = 0;
     resultVerticsColors[source] = 0;
-    //writeoperation
+
+    writeFileHandler->write(new Vertex(source, COLORS_VECTOR[0])); //write in file operation
     QVector<bool> availableColors(sizeGraph, false);
 
     for (int u=1; u<sizeGraph; u++)
@@ -169,7 +169,7 @@ void ColorGraph::executeAlgorithm()
             if (availableColors[cr] == false) break;
         }
         resultVerticsColors[u] = cr;
-        //writeOperation
+        writeFileHandler->write(new Vertex(u, COLORS_VECTOR[cr%COLORS_VECTOR_SIZE])); //safe write in file operation
 
         for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
         {
@@ -249,14 +249,13 @@ void ShortestPathes::executeAlgorithm()
 {
     int sizeGraph = graphInput.graph.size();
     QVector<int> shortestDistancesFromS(sizeGraph, graphInput.INF);
-    //QVector<int> prev(sizeGraph, -1); //have no previous vertices
+    shortestDistancesFromS[s] = 0;
+    const int color = 0;
 
     if (!graphInput.weighted) // start BFS from source
     {
         int source = s;
-        int sizeGraph = graphInput.graph.size();
         QVector<bool> visited(sizeGraph, false);
-        shortestDistancesFromS[source] = 0;
 
         QQueue<int> queue;
         visited[source] = true;
@@ -265,9 +264,7 @@ void ShortestPathes::executeAlgorithm()
         while(!queue.empty())
         {
             source = queue.front();
-            //writeOperation; current distance to vertex
-            std::cout<<source; //debugiing
-
+            writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color], shortestDistancesFromS[source]));
             queue.pop_front();
 
             for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
@@ -287,4 +284,6 @@ void ShortestPathes::executeAlgorithm()
 
     }
     //else weighted
+
+
 }
