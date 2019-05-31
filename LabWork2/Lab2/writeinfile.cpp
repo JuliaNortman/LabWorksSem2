@@ -1,5 +1,20 @@
 #include "writeinfile.h"
 
+Vertex::Vertex(int vertex, QString color, int label)
+{
+    this->vertex = QString::number(vertex);
+    this->color = color;
+    this->label = QString::number(label);
+}
+
+Edge::Edge(int from, int to, QString color, int label)
+{
+    this->from =QString::number(from);
+    this->to = QString::number(to);
+    this->color = color;
+    this->label = QString::number(label);
+}
+
 WriteInFile::WriteInFile(const Graph& G)
 {
     //creating file
@@ -47,6 +62,7 @@ WriteInFile::WriteInFile(const Graph& G)
 
     file.write("}");
     file.close();
+    createImage();
 }
 
 void WriteEdgeInFile::write(void* e)
@@ -115,8 +131,6 @@ void WriteVertexInFile::write(void* v)
     {
         QString line = file.readLine(); //read line from the graphviz.dat
         QString vertex = line.split(";")[0].split("[")[0]; //in order to get vertex
-        //qDebug(vertex.toStdString().c_str());
-        //qDebug(std::to_string(line.split(";").size()).c_str());
         if(vertex != d->vertex)
         {
             temp.write(line.toStdString().c_str());
@@ -130,12 +144,15 @@ void WriteVertexInFile::write(void* v)
     file.remove();
     temp.close();
     temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
+    createImage();
 }
 
 void WriteInFile::createImage()
 {
-    //comman_str += "..\\TreeVisualizer\\graphviz\\bin\\dot.exe  -T png " + name_str + " -o step_" + std::to_string(global_value - 1) + ".png";
-    QString myPath = " C:\\Users\\hp250\\documents\\2semester\\proga\\labs\\labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe -Tpng c:\\users\\hp250\\documents\\2semester\\proga\\labs\\labworkssem2\\labwork2\\lab2\\files\\graphviz.dat -o c:\\users\\hp250\\documents\\2semester\\proga\\labs\\labworkssem2\\labwork2\\lab2\\images\\img.png";
-            //graphvizPath + " -o " + imagePath  + "-Tpng " + filePath ;
+    numberOfSteps++;
+    QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
+    QString filePath = "labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
+    QString imagePath = "labworkssem2\\labwork2\\lab2\\images\\"+QString::number(numberOfSteps)+".png";
+    QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
     system(myPath.toStdString().c_str());
 }

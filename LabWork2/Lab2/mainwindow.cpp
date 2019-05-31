@@ -122,16 +122,21 @@ void MainWindow::on_weightedGraph_stateChanged(int arg1)
 
 void MainWindow::illustrate()
 {
-    QDirIterator it("LabWorksSem2//LabWork2//Lab2//Images//", QDirIterator::NoIteratorFlags);
+    if(it) delete it;
+    it = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images", QDirIterator::NoIteratorFlags);
+
     int i = 0;
-    while (it.hasNext() && !stop())
+    while (it->hasNext() && changeAutomatically)
     {
         if(i > 1)
         {
-            setPicture(it.next());
+            ui->prevPushButton->show();
+            ui->nextPushButton->show();
+
+            setPicture(it->next());
             QTime time;
             time.start();
-            for(;time.elapsed() < 500;) {
+            for(;time.elapsed() < 800;) {
                 QApplication::processEvents(nullptr);
             }
         }
@@ -168,4 +173,28 @@ bool MainWindow::stop()
 {
     static bool st = false;
     return st;
+}
+
+void MainWindow::on_prevPushButton_clicked()
+{
+    changeAutomatically = false;
+    int fileNumber = it->fileName().split(".")[0].toInt()-1;
+    qDebug(std::to_string(fileNumber).c_str());
+    if(fileNumber > 0)
+    {
+        QDirIterator *temp = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images//"+QString::number(fileNumber)+".png");
+        it = temp;
+        delete temp;
+        setPicture(it->filePath());
+        qDebug(it->filePath().toStdString().c_str());
+    }
+}
+
+void MainWindow::on_nextPushButton_clicked()
+{
+    changeAutomatically = false;
+    if(it->hasNext())
+    {
+        setPicture(it->next());
+    }
 }

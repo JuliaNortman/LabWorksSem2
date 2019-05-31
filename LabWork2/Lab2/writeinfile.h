@@ -32,6 +32,7 @@ public:
 class Vertex
 {
 public:
+    Vertex(int v, QString color, int label = 0);
     QString label; //additional mark on the vertex
     QString color; //color in which vertex will be printed
     QString vertex;
@@ -40,6 +41,7 @@ public:
 class Edge
 {
 public:
+    Edge(int to, int from, QString color, int label = 0);
     QString label; //additional mark on the vertex
     QString color; //color in which vertex will be printed
     QString from; //start of the edge
@@ -48,6 +50,8 @@ public:
 
 class WriteInFile
 {
+protected:
+    int numberOfSteps = 0;
 public:
     WriteInFile(const Graph& G);
     virtual ~WriteInFile() = default;
