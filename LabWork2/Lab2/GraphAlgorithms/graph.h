@@ -25,6 +25,7 @@ public:
     bool weighted = false;
     bool oriented = false;
     const int NO_EDGE = 0;
+    const int INF = 99999; //random huge number less than weight of any graph edge
 
     Graph() = default;
     Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted);
@@ -34,6 +35,7 @@ public:
     QVector<int> BFSfrom(int source=0) const;
     QVector<int> DFSfrom(int source=0) const;
     bool isConnected();
+    //bool hasNegativeWeightCycleDirectedGraph();
 };
 
 #endif // GRAPH_H

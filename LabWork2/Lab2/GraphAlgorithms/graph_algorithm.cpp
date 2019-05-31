@@ -257,5 +257,47 @@ void DetectCycle::executeAlgorithm()
 
 void ShortestPathes::executeAlgorithm()
 {
+    int sizeGraph = graphInput.graph.size();
+    QVector<int> shortestDistancesFromS(sizeGraph, graphInput.INF);
+    //QVector<int> prev(sizeGraph, -1); //have no previous vertices
+
+    if (!graphInput.weighted) // start BFS from source
+    {
+        int source = s;
+        int sizeGraph = graphInput.graph.size();
+        QVector<bool> visited(sizeGraph, false);
+        shortestDistancesFromS[source] = 0;
+
+        QQueue<int> queue;
+        visited[source] = true;
+        queue.push_back(source);
+
+        while(!queue.empty())
+        {
+            source = queue.front();
+            //writeOperation; current distance to vertex
+            std::cout<<source; //debugiing
+
+            queue.pop_front();
+
+            for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+            {
+                if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
+                {
+                    if (!visited[adj_v]) // if still not visited
+                    {
+                        visited[adj_v] = true;
+                        queue.push_back(adj_v);
+                        shortestDistancesFromS[adj_v] =  shortestDistancesFromS[source] + 1;
+                        //prev[adj_v] = source;
+                    }
+                }
+            }
+        }
+
+    }
+    //else weighted
+
+
 
 }

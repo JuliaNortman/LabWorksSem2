@@ -69,7 +69,7 @@ void Graph::deleteLoops()
     {
         int s = graph.size();
         for (int i=0; i<s; i++)
-            graph[i][i] = 0;
+            graph[i][i] = NO_EDGE;
     }
 }
 
@@ -272,7 +272,7 @@ bool Graph::isConnected()
         }
         else return false;
     }
-    else //if oriented, check if strongly connected
+    else //if oriented, check if strongly connected using Kosaraju's algo
     {
         QVector<int> DFStraverse = DFSfrom(0);
         if (DFStraverse.size() != graph.size())
@@ -296,3 +296,8 @@ bool Graph::isConnected()
 
     //return true;
 }
+
+
+
+
+
