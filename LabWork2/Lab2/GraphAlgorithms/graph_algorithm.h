@@ -17,6 +17,7 @@ protected:
     void setSourceVertex(int source);
 public:
     GraphAlgorithm(Graph &graph) : graphInput(graph){}
+    virtual ~GraphAlgorithm() = default;
     virtual void executeAlgorithm() = 0;
 };
 
