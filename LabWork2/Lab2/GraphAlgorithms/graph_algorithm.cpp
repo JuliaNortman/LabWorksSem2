@@ -308,9 +308,11 @@ void MinimalSpanningTree::executeAlgorithm()
     key[source] = 0;
     parent[source] = -1;
 
+    int min = graphInput.INF; int min_index;
+
     for (int i = 0; i< sizeGraph-1; i++)
         {
-            int min = graphInput.INF; int min_index;
+            min = graphInput.INF;
             for (int v = 0; v < sizeGraph; v++)
                 if (mstSet[v] == false && key[v] < min)
                 {

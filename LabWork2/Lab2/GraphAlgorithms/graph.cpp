@@ -140,6 +140,11 @@ bool Graph::hasCycle() const
                     {
                        stack.push(adj_v);
                     }
+                    //
+                    else if (visited[adj_v] && oriented)
+                    {
+                        return true;
+                    }
                 }
             }
         }
