@@ -70,7 +70,7 @@ private slots:
     void on_numberOfVertexes_currentIndexChanged(int index);
     void stopChanging(); //is called after prev or next button is clicked in order to stop automatic changes of the pictures
     bool stop();
-    //void on_prevPushButton_clicked();
+    void on_prevPushButton_clicked();
     void on_nextPushButton_clicked();
     void on_algorithm_currentIndexChanged(int index);
     void algoExecute();

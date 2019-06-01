@@ -128,13 +128,14 @@ void MainWindow::illustrate()
     int i = 0;
     while (it->hasNext() && changeAutomatically)
     {
+        QString str = it->next();
         if(i > 1)
         {
             ui->prevPushButton->show();
             ui->nextPushButton->show();
 
-            QString str = it->next();
-            qDebug(str.toStdString().c_str());
+
+            //qDebug(str.toStdString().c_str());
             setPicture(str);
             QTime time;
             time.start();
@@ -167,10 +168,6 @@ void MainWindow::removeFilesInDir(const QString& dirName)
 
 void MainWindow::on_Run_clicked()
 {
-   /* QDir dir("LabWorksSem2//LabWork2//Lab2//Images");
-    dir.removeRecursively();
-    dir.setPath("LabWorksSem2//LabWork2//Lab2");
-    dir.mkdir("Images");*/
     removeFilesInDir("Files");
 
     Graph g(graph, directed, weighted);
@@ -184,7 +181,7 @@ void MainWindow::on_Run_clicked()
 
 
     algoExecute();
-    //illustrate();
+    illustrate();
 }
 
 void MainWindow::stopChanging()
@@ -198,20 +195,26 @@ bool MainWindow::stop()
     return st;
 }
 
-/*void MainWindow::on_prevPushButton_clicked()
+void MainWindow::on_prevPushButton_clicked()
 {
     changeAutomatically = false;
-    int fileNumber = it->fileName().split(".")[0].toInt()-1;
-    qDebug(std::to_string(fileNumber).c_str());
+    int fileNumber = it->fileName().split(".")[0].toInt() - 1;
+    QString filePath = "";
+    if(fileNumber > 9) filePath = QString::number(fileNumber)+".png";
+    else filePath = "0" + QString::number(fileNumber)+".png";
+    QString path = "LabWorksSem2//LabWork2//Lab2//Images//"+filePath;
     if(fileNumber > 0)
     {
-        QDirIterator *temp = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images//"+QString::number(fileNumber)+".png");
-        it = temp;
-        delete temp;
-        setPicture(it->filePath());
-        qDebug(it->filePath().toStdString().c_str());
+        setPicture(path);
     }
-}*/
+    else return;
+    delete it;
+    it = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images//", QDirIterator::NoIteratorFlags);
+    while(path != it->filePath() && it->hasNext())
+    {
+        it->next();
+    }
+}
 
 void MainWindow::on_nextPushButton_clicked()
 {
