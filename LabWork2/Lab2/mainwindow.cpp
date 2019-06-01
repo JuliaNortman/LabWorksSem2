@@ -165,6 +165,7 @@ void MainWindow::on_Run_clicked()
     Edge v(1, 2, "red");
     f.write(&v);
 
+    algoExecute();
     illustrate();
 }
 
@@ -201,4 +202,65 @@ void MainWindow::on_nextPushButton_clicked()
     {
         setPicture(it->next());
     }
+}
+
+void MainWindow::on_algorithm_currentIndexChanged(int index)
+{
+    algoNumber = index;
+}
+
+void MainWindow::algoExecute()
+{
+    if(algo) delete algo;
+    Graph G(graph, directed, weighted);
+    switch (algoNumber)
+    {
+    case 0:
+    {
+        //algo = new BFS(G);
+        qDebug("BFS");
+        break;
+    }
+    case 1:
+    {
+        //algo = new DFS(G);
+        qDebug("DFS");
+        break;
+    }
+    case 2:
+    {
+        //algo = new ConnectedComponents(G);
+        qDebug("ConnectedComponents ");
+        break;
+    }
+    case 3:
+    {
+        //algo = new ColorGraph(G);
+        qDebug("ColorGraph");
+        break;
+    }
+    case 4:
+    {
+        //algo = new DetectCycle(G);
+        qDebug("DetectCycle");
+        break;
+    }
+    case 5:
+    {
+        //algo = new ShortestPathes(G);
+        qDebug("ShortestPathes");
+        break;
+    }
+    case 6:
+    {
+        //algo = new MinimalSpanningTree(G);
+        qDebug("MinimalSpanningTree");
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    }
+    //algo->executeAlgorithm();
 }

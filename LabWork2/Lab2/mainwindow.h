@@ -3,6 +3,7 @@
 
 #include "matrix.h"
 #include "writeinfile.h"
+//#include "GraphAlgorithm/graph_algorithm.h"
 
 #include <QMainWindow>
 #include <QRandomGenerator>
@@ -14,6 +15,22 @@
 namespace Ui {
 class MainWindow;
 }
+
+/*should be deleted
+* used only for correct work of mainWindow
+*/
+class GraphAlgorithm
+{
+protected:
+    Graph graphInput;
+    int s = 0; //source
+    WriteInFile *writeFileHandler; //=NULL;
+    void setSourceVertex(int source);
+public:
+    GraphAlgorithm(Graph &graph) : graphInput(graph){}
+    virtual ~GraphAlgorithm() = default;
+    virtual void executeAlgorithm() = 0;
+};
 
 class MainWindow : public QMainWindow
 {
@@ -34,6 +51,8 @@ private:
     QVector<QVector<QLabel*>> labels; //labels of the printed matrix
     bool changeAutomatically = true; //true if images are changing on timer
     QDirIterator* it = nullptr;
+    GraphAlgorithm* algo = nullptr; //pointer on the algorithm
+    int algoNumber = 0;
 
 private slots:
     void printMatrix(QVector<QVector<int>>); //print matrix in the matrix grid
@@ -52,6 +71,8 @@ private slots:
     bool stop();
     //void on_prevPushButton_clicked();
     void on_nextPushButton_clicked();
+    void on_algorithm_currentIndexChanged(int index);
+    void algoExecute();
 };
 
 #endif // MAINWINDOW_H

@@ -162,6 +162,31 @@
          <string>DFS</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Connected Components</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Color Graph</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Detect Cycle</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Shortest Pathes</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Minimal Spanning Tree</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
