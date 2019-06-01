@@ -2,6 +2,9 @@
 #include <QVector>
 #include <QStack>
 #include <QSet>
+#include <QMap>
+#include <QPair>
+#include <map>
 #include "graph_algorithm.h"
 
 #include<iostream>
@@ -289,6 +292,59 @@ void ShortestPathes::executeAlgorithm()
 
 void MinimalSpanningTree::executeAlgorithm()
 {
+    if (!graphInput.isConnected() || graphInput.oriented || !graphInput.weighted)
+    {
+        //throw "Algorithm is not applied to this graph";
+        return;
+    }
+    //else
+
+    int sizeGraph = graphInput.graph.size();
+    QVector<int> parent(sizeGraph);
+    QVector<int> key(sizeGraph, graphInput.INF);
+    QVector<bool> mstSet (sizeGraph, false);
+
+    int source = 0;
+    key[source] = 0;
+    parent[source] = -1;
+
+    for (int i = 0; i< sizeGraph-1; i++)
+        {
+            int min = graphInput.INF; int min_index;
+            for (int v = 0; v < sizeGraph; v++)
+                if (mstSet[v] == false && key[v] < min)
+                {
+                    min = key[v];
+                    min_index = v;
+                }
+            int u = min_index;
+
+            mstSet[u] = true;
+            for (int v = 0; v < sizeGraph; v++)
+                {
+                    if (graphInput.graph[u][v] && mstSet[v] == false && graphInput.graph[u][v] < key[v])
+                    {
+                        parent[v] = u;
+                        key[v] = graphInput.graph[u][v];
+                    }
+                }
+        }
+
+    //got spanning tree and prepare it to step visualizaion
+   std::map<int, std::pair<int,int>> minTree;
+    for (int i = 1; i < sizeGraph; i++)
+        {
+            //cout <<  parent[i] << "---" << i << "   " <<graph[i][parent[i]] << endl;
+            minTree.insert(std::pair<int, std::pair<int,int>> (graphInput.graph[i][parent[i]], std::pair<int,int>(parent[i],i)));
+        }
+
+    int color = 0;
+    std::map<int, std::pair<int,int>>::iterator it = minTree.begin();
+    for (;it!=minTree.end(); it++)
+    {
+        writeFileHandler->write(new Edge(it->second.second, it->second.first, COLORS_VECTOR[color], it->first));
+    }
+
 
 }
 

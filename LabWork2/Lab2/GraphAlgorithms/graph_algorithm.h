@@ -159,7 +159,8 @@ public:
 * Works only for weighted undirected connected graphs.
 * Builds minimal spannin tree.
 * Derived from GraphAlgorithm class.
-* Relize Prim's or Krauskal's algorithm.
+* Using Prim's and Krauskal ideas.
+* Visualize Krauskal algo.
 */
 class MinimalSpanningTree: public GraphAlgorithm
 {
