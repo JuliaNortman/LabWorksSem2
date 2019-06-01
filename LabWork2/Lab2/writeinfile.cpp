@@ -1,4 +1,5 @@
 #include "writeinfile.h"
+
 #include <windows.h>
 #include <winbase.h>
 
@@ -128,7 +129,7 @@ void WriteEdgeInFile::write(void* e)
     temp.close();
     numberOfSteps++;
     //temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
-    //createImage();
+    createImage();
 }
 
 void WriteVertexInFile::write(void* v)
@@ -166,19 +167,19 @@ void WriteVertexInFile::write(void* v)
     temp.close();
     numberOfSteps++;
     //temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
-    //createImage();
+    createImage();
 }
 
 void WriteInFile::createImage()
 {
-    numberOfSteps++;
-    QString fileName = "";
+    //numberOfSteps++;
+    /*QString fileName = "";
     if(numberOfSteps > 9) fileName = QString::number(numberOfSteps)+".png";
     else fileName = "0"+QString::number(numberOfSteps)+".png";
     QString pp = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\";
     QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
-    QString filePath = "labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
-    QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+fileName;
+    QString filePath = "labworkssem2\\labwork2\\lab2\\files\\00.dat";
+    QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\111.png";//+fileName;
     QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
 
     STARTUPINFOW si;
@@ -188,7 +189,7 @@ void WriteInFile::createImage()
     si.cb = sizeof(si);
     ZeroMemory(&pi, sizeof(pi));
 
-   /* if (CreateProcessW(myPath.toStdWString().c_str(), nullptr, nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
+    if (CreateProcessW(myPath.toStdWString().c_str(), nullptr, nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
     {
         WaitForSingleObject(pi.hProcess, INFINITE);
         CloseHandle(pi.hProcess);
@@ -201,8 +202,14 @@ void WriteInFile::createImage()
 
    // CreateProcessA((myPath+"\0").toStdString().c_str(), nullptr, nullptr, nullptr, false, NORMAL_PRIORITY_CLASS, nullptr, nullptr, cif, &pi );
 
-    system(myPath.toStdString().c_str());
-    /*if(WinExec(myPath.toStdString().c_str(), SW_HIDE) > 31)
+    //system(myPath.toStdString().c_str());
+    /*QString pp = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\";
+    QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
+    QString filePath = "labworkssem2\\labwork2\\lab2\\files\\00.dat";
+    QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\111.png";//+fileName;
+    QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
+
+    if(WinExec(myPath.toStdString().c_str(), SW_HIDE) > 31)
     {
         qDebug("picture was generated");
     }*/

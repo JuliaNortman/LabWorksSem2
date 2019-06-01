@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <windows.h>
+#include <winbase.h>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -154,7 +157,7 @@ void MainWindow::setPicture(QString path)
     ui->graphLabel->setScaledContents(true);
 }
 
-void MainWindow::removeFilesInDir(const QString& dirName)
+void MainWindow::clearDir(const QString& dirName)
 {
     QDir dir("LabWorksSem2//LabWork2//Lab2//"+dirName);
     dir.removeRecursively();
@@ -168,7 +171,7 @@ void MainWindow::removeFilesInDir(const QString& dirName)
 
 void MainWindow::on_Run_clicked()
 {
-    removeFilesInDir("Files");
+    clearDir("Files");
 
     Graph g(graph, directed, weighted);
     WriteVertexInFile f(g);
@@ -181,12 +184,7 @@ void MainWindow::on_Run_clicked()
 
 
     algoExecute();
-    illustrate();
-}
-
-void MainWindow::stopChanging()
-{
-
+    //illustrate();
 }
 
 bool MainWindow::stop()
@@ -297,4 +295,56 @@ void MainWindow::algoExecute()
         QString str = "Something went wrong! Please try again later";
         QMessageBox::critical(nullptr, "Critical", str);
     }*/
+
+    clearDir("Images");
+
+    QDirIterator *itFiles = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Files", QDirIterator::NoIteratorFlags);
+
+    int i = 0;
+    int numberOfSteps = 1;
+    while (itFiles->hasNext())
+    {
+        QString str = itFiles->next();
+        if(i > 1)
+        {
+            QString imageName = "";
+            if(numberOfSteps > 9) imageName = QString::number(numberOfSteps)+".png";
+            else imageName = "0"+QString::number(numberOfSteps)+".png";
+            QString pp = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\";
+            QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
+            QString filePath = itFiles->filePath(); //"labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
+            QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+imageName;
+            QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
+
+            /*STARTUPINFOW si;
+            PROCESS_INFORMATION pi;
+
+            ZeroMemory(&si, sizeof(si));
+            si.cb = sizeof(si);
+            ZeroMemory(&pi, sizeof(pi));
+
+            if (CreateProcessW(myPath.toStdWString().c_str(), nullptr, nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
+            {
+                qDebug("create process");
+                WaitForSingleObject(pi.hProcess, INFINITE);
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+            }
+            system(myPath.toStdString().c_str());*/
+
+            if(WinExec(myPath.toStdString().c_str(), SW_HIDE) > 31)
+            {
+                qDebug("picture was generated");
+            }
+
+            numberOfSteps++;
+        }
+        ++i;
+    }
+    //illustrate();
+}
+
+void MainWindow::on_visualizePushButton_clicked()
+{
+    illustrate();
 }
