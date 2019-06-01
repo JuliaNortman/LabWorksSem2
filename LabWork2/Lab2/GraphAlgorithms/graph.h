@@ -5,6 +5,7 @@
 #include<QStack>
 #include<QQueue>
 #include<QtAlgorithms>
+//#include <gtest/gtest.h>
 
 /**
 * Whatever matrix it be, it can be interpretated as a graph.
@@ -38,6 +39,17 @@ public:
     QVector<int> DFSfrom(int source=0) const; ///< Returns DFS traverse vector.
     bool isConnected();                       ///< Checks graph to be connected (with BFS) or strongly connected (for oriented use DFS).
     //bool hasNegativeWeightCycleDirectedGraph();
+
+/*
+private:
+    FRIEND_TEST(Graph, hasLoopsFuncTest);
+    FRIEND_TEST(Graph, isCorrectGraphFuncTest);
+    FRIEND_TEST(Graph, hasSymmetricMatrixFuncTest);
+    FRIEND_TEST(Graph, hasSquareMatrixFuncTest);
+    FRIEND_TEST(Graph, delteLoopsFuncTest);
+    FRIEND_TEST(Graph, correctGraphFuncTest);
+    FRIEND_TEST(Graph, transponseFuncTest);
+*/
 };
 
 #endif // GRAPH_H

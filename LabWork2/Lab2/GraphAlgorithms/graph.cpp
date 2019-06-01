@@ -5,10 +5,13 @@ Graph::Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted)
     this->graph = graph;
     this->oriented = oriented;
     this->weighted = weighted;
+/*
     if (!isCorrectGraph())
+
     {
         correctGraph();
     }
+*/
 }
 
 
@@ -85,11 +88,11 @@ void Graph::correctGraph()
     }
 
     graph.resize(largestDimention);  ///< Making matrix square and filling new cells with NO_EDGE.
-    for (auto v : graph)
+    for (int i=0; i<graph.size(); i++)
     {
-        while(v.size() != largestDimention)
+        while(graph[i].size() != largestDimention)
         {
-            v.push_back(NO_EDGE);
+            graph[i].push_back(NO_EDGE);
         }
     }
 
