@@ -197,10 +197,15 @@ void DetectCycle::executeAlgorithm()
     QVector<int> used(sizeGraph, false); //set of used vetrices
 
     int color = 0; // used as color identifier
+
+    QVector<int> previous(sizeGraph, -1);
     bool notAllVertUsed = true;
     stack.push(source);
     while(notAllVertUsed)
     {
+        bool newComponent = true;
+        int previousSource = -1;
+
         while(!stack.empty())
         {
             source = stack.top();
@@ -209,13 +214,23 @@ void DetectCycle::executeAlgorithm()
 
             if (!visited[source])
             {
-                //writeOperation()
-                std::cout<<source<<" "<<color;
                 visited[source] = true;
+                if (!newComponent)
+                {
+                    writeFileHandler->write(new Edge(source, previous[source], COLORS_VECTOR[color]));
+                    //std::cout<<previous[source]<<"-"<<source<<"__";
+                }
             }
             else //has cycle
             {
-                //writeOperation;
+                for (int i=0; i<sizeGraph; i++)
+                {
+                    if ((graphInput.graph[source][i] != graphInput.NO_EDGE) && (previous[source]!=i) && visited[i])
+                    {
+                       writeFileHandler->write(new Edge(i, source, COLORS_VECTOR[++color]));
+                        //std::cout<<source<<"-"<<i<<"_stop.";
+                    }
+                }
                 return;
             }
 
@@ -225,10 +240,19 @@ void DetectCycle::executeAlgorithm()
                 {
                     if (!visited[adj_v]) // if still not visited
                     {
-                       stack.push(adj_v);
+                        stack.push(adj_v);
+                        previous[adj_v] = source;
+                    }
+                    else if (visited[adj_v] && graphInput.oriented)
+                    {
+                        writeFileHandler->write(new Edge(adj_v, source, COLORS_VECTOR[++color]));
+                        std::cout<<source<<"---"<<adj_v<<"______";
+                        return;
                     }
                 }
             }
+            newComponent = false;
+            previousSource = source;
         }
 
         color++; //change color

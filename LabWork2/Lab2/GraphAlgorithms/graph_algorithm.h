@@ -127,7 +127,7 @@ class DetectCycle: public GraphAlgorithm
 public:
     DetectCycle(Graph &graph) : GraphAlgorithm (graph)
     {
-        //writeFileHandler = new WriteVertexInFile (graph);
+        writeFileHandler = new WriteEdgeInFile(graph);
         setSourceVertex(0);
     }
     void executeAlgorithm();
