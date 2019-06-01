@@ -26,7 +26,8 @@ void BFS::executeAlgorithm()
     int source = s;
     int sizeGraph = graphInput.graph.size();
     QVector<bool> visited(sizeGraph, false);
-
+    QVector<int> BFSTraverseResult; //contains vertex sequence
+    
     const int color = 0;// color number less than COLORS_VECTOR_SIZE
     QQueue<int> queue;
     visited[source] = true;
@@ -35,6 +36,7 @@ void BFS::executeAlgorithm()
     while(!queue.empty())
     {
         source = queue.front();
+        BFSTraverseResult.push_back(source);
         writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
         queue.pop_front();
         for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
@@ -49,6 +51,8 @@ void BFS::executeAlgorithm()
             }
         }
     }
+    
+    //emit bfstraverseresult
 }
 
 
@@ -58,6 +62,7 @@ void DFS::executeAlgorithm()
     int sizeGraph = graphInput.graph.size();
     const int color = 0; //color number less than COLORS_VECTOR_SIZE
 
+    QVector<int> DFSTraverseResult; //contains vertex sequence
     QVector<bool> visited(sizeGraph, false);
     QStack<int> stack;
 
@@ -70,6 +75,7 @@ void DFS::executeAlgorithm()
         if (!visited[source])
         {
             writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
+            DFSTraverseResult.push_back(source);
             visited[source] = true;
         }
 
@@ -84,6 +90,8 @@ void DFS::executeAlgorithm()
             }
         }
     }
+    
+    //emit dfstraverseresult
 }
 
 
@@ -96,11 +104,15 @@ void ConnectedComponents::executeAlgorithm()
     QStack<int> stack; //stack of current vertices to concern
     QVector<int> used(sizeGraph, false); //set of used vetrices
 
+    QString connectedComponents; //contains sequences of vertics (components) devided by commas
+    
     bool notAllVertUsed = true;
     stack.push(source);
     int color = 0; //color number less than COLORS_VECTOR_SIZE
     while(notAllVertUsed)
     {
+        if (source!=s){connectedComponents += ", ";} //if not first component then add a comma
+            
         while(!stack.empty())
         {
             source = stack.top();
@@ -110,6 +122,7 @@ void ConnectedComponents::executeAlgorithm()
             if (!visited[source])
             {
                 writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color%COLORS_VECTOR_SIZE]));
+                connectedComponents += QString::number(source) + " ";
                 visited[source] = true;
             }
 
@@ -124,7 +137,7 @@ void ConnectedComponents::executeAlgorithm()
                 }
             }
         }
-
+        
         color++; //change color
 
         //find any still not used vertes (not from previous connectivity component)
@@ -140,6 +153,8 @@ void ConnectedComponents::executeAlgorithm()
         }
         stack.push(indNotUsedVert);
     }
+    
+    //emit connectedComponents
 }
 
 
@@ -185,6 +200,15 @@ void ColorGraph::executeAlgorithm()
             }
         }
     }
+    
+    /*QString result;
+    for (int i=0; i<resultVerticsColors.size(); i++)
+    {
+        result += QString::number(i) + "-" + resultVerticsColors[i]+ ", ";
+    }
+    
+    //emit result;
+    */
 }
 
 void DetectCycle::executeAlgorithm()
