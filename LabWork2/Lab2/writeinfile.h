@@ -57,6 +57,8 @@ public:
     virtual ~WriteInFile() = default;
     virtual void write(void*) = 0;
     void createImage();
+    const QString fileName();
+    const QString prevFileName();
 };
 
 class WriteEdgeInFile :public WriteInFile

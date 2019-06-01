@@ -153,20 +153,38 @@ void MainWindow::setPicture(QString path)
     ui->graphLabel->setScaledContents(true);
 }
 
-void MainWindow::on_Run_clicked()
+void MainWindow::removeFilesInDir(const QString& dirName)
 {
-    QDir dir("LabWorksSem2//LabWork2//Lab2//Images");
+    QDir dir("LabWorksSem2//LabWork2//Lab2//"+dirName);
     dir.removeRecursively();
     dir.setPath("LabWorksSem2//LabWork2//Lab2");
-    dir.mkdir("Images");
+    int i = 0;
+    while(!dir.mkdir(dirName))
+    {
+        qDebug(std::to_string(++i).c_str());
+    }
+}
+
+void MainWindow::on_Run_clicked()
+{
+   /* QDir dir("LabWorksSem2//LabWork2//Lab2//Images");
+    dir.removeRecursively();
+    dir.setPath("LabWorksSem2//LabWork2//Lab2");
+    dir.mkdir("Images");*/
+    removeFilesInDir("Files");
 
     Graph g(graph, directed, weighted);
-    WriteEdgeInFile f(g);
-    Edge v(1, 2, "red");
-    f.write(&v);
+    WriteVertexInFile f(g);
+    for(int i = 0; i < n; ++i)
+    {
+        Vertex v(i+1, "red");
+        f.write(&v);
+    }
+
+
 
     algoExecute();
-    illustrate();
+    //illustrate();
 }
 
 void MainWindow::stopChanging()
@@ -262,5 +280,18 @@ void MainWindow::algoExecute()
         break;
     }
     }
-    //algo->executeAlgorithm();
+    /*try
+    {
+        algo->executeAlgorithm();
+    }
+    catch (const QString& str)
+    {
+        //call message box to show the problem
+        QMessageBox::critical(nullptr, "Critical", str);
+    }
+    catch(...)
+    {
+        QString str = "Something went wrong! Please try again later";
+        QMessageBox::critical(nullptr, "Critical", str);
+    }*/
 }

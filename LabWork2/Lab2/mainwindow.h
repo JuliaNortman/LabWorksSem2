@@ -11,6 +11,7 @@
 #include <QDateTime>
 #include <QDirIterator>
 #include <QTimer>
+#include <QMessageBox>
 
 namespace Ui {
 class MainWindow;
@@ -73,6 +74,7 @@ private slots:
     void on_nextPushButton_clicked();
     void on_algorithm_currentIndexChanged(int index);
     void algoExecute();
+    void removeFilesInDir(const QString& dirName);
 };
 
 #endif // MAINWINDOW_H

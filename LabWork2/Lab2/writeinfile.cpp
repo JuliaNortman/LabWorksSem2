@@ -20,7 +20,7 @@ Edge::Edge(int from, int to, QString color, int label)
 WriteInFile::WriteInFile(const Graph& G)
 {
     //creating file
-    QString path = "LabWorksSem2\\LabWork2\\Lab2\\Files\\graphviz.dat";
+    QString path = "LabWorksSem2\\LabWork2\\Lab2\\Files\\00.dat";
     QFile file(path);
     file.remove(); //removes file if it existed before
     if(!file.open(QIODevice::ReadWrite)) //open file
@@ -64,14 +64,32 @@ WriteInFile::WriteInFile(const Graph& G)
 
     file.write("}");
     file.close();
-    createImage();
+    //createImage();
+    numberOfSteps++;
+}
+
+const QString WriteInFile::fileName()
+{
+    QString fName = "";
+    if(numberOfSteps > 9) fName = QString::number(numberOfSteps) + ".dat";
+    else fName = "0" + QString::number(numberOfSteps) + ".dat";
+    return fName;
+}
+
+const QString WriteInFile::prevFileName()
+{
+    int prevStep = numberOfSteps-1;
+    QString fName = "";
+    if(prevStep > 9) fName = QString::number(prevStep) + ".dat";
+    else fName = "0" + QString::number(prevStep) + ".dat";
+    return fName;
 }
 
 void WriteEdgeInFile::write(void* e)
 {
     Edge* d = static_cast<Edge*>(e);
-    QString path = "LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat";
-    QString path2  = "LabWorksSem2//LabWork2//Lab2//Files//temp.dat";
+    QString path = "LabWorksSem2//LabWork2//Lab2//Files//"+prevFileName();
+    QString path2  = "LabWorksSem2//LabWork2//Lab2//Files//"+fileName();
     QFile file(path);
     QFile temp(path2);
     if(!file.open(QIODevice::ReadOnly)) //open file
@@ -106,17 +124,18 @@ void WriteEdgeInFile::write(void* e)
         }
     }
     file.close();
-    file.remove();
+    //file.remove();
     temp.close();
-    temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
-    createImage();
+    numberOfSteps++;
+    //temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
+    //createImage();
 }
 
 void WriteVertexInFile::write(void* v)
 {
     Vertex* d = static_cast<Vertex*>(v);
-    QString path = "LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat";
-    QString path2  = "LabWorksSem2//LabWork2//Lab2//Files//temp.dat";
+    QString path = "LabWorksSem2//LabWork2//Lab2//Files//"+prevFileName();
+    QString path2  = "LabWorksSem2//LabWork2//Lab2//Files//"+fileName();
     QFile file(path);
     QFile temp(path2);
     if(!file.open(QIODevice::ReadOnly)) //open file
@@ -143,10 +162,11 @@ void WriteVertexInFile::write(void* v)
         }
     }
     file.close();
-    file.remove();
+    //file.remove();
     temp.close();
-    temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
-    createImage();
+    numberOfSteps++;
+    //temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
+    //createImage();
 }
 
 void WriteInFile::createImage()
@@ -160,7 +180,32 @@ void WriteInFile::createImage()
     QString filePath = "labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
     QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+fileName;
     QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
-    //system(myPath.toStdString().c_str());
-    WinExec(myPath.toStdString().c_str(), SW_HIDE);
-  //  ShellExecuteW(NULL,NULL,"labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe"," -Tpng "+filePath+ " -o " + imagePath,"", "SW_HIDE");
+
+    STARTUPINFOW si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+   /* if (CreateProcessW(myPath.toStdWString().c_str(), nullptr, nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
+    {
+        WaitForSingleObject(pi.hProcess, INFINITE);
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+    }*/
+   /* LPSTARTUPINFOA cif;
+    ZeroMemory(&cif,sizeof(STARTUPINFO));
+    PROCESS_INFORMATION pi;*/
+    //const_cast<char*>((" -Tpng "+pp+filePath+ " -o " + pp+imagePath+"\0").toStdString().c_str())
+
+   // CreateProcessA((myPath+"\0").toStdString().c_str(), nullptr, nullptr, nullptr, false, NORMAL_PRIORITY_CLASS, nullptr, nullptr, cif, &pi );
+
+    system(myPath.toStdString().c_str());
+    /*if(WinExec(myPath.toStdString().c_str(), SW_HIDE) > 31)
+    {
+        qDebug("picture was generated");
+    }*/
+    //ShellExecute(graphvizPath," -Tpng "+filePath+ " -o " + imagePath )
+    //ShellExecute("",NULL,"labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe"," -Tpng "+filePath+ " -o " + imagePath,"", "SW_HIDE");
 }
