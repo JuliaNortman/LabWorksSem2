@@ -456,6 +456,7 @@ void MinimalSpanningTree::executeAlgorithm()
     for (;it!=minTree.end(); it++)
     {
         writeFileHandler->write(new Edge(it->second.second, it->second.first, COLORS_VECTOR[color], it->first));
+        writeFileHandler->write(new Edge(it->second.first, it->second.second, COLORS_VECTOR[color], it->first));
         file.write((QString::number(it->second.first) + "--" + QString::number(it->second.second) + " \n").toStdString().c_str());
     }
 
