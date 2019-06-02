@@ -67,6 +67,7 @@ WriteInFile::WriteInFile(const Graph& G)
     file.close();
     //createImage();
     numberOfSteps++;
+    writeNumberOfSteps(numberOfSteps);
 }
 
 const QString WriteInFile::fileName()
@@ -128,8 +129,10 @@ void WriteEdgeInFile::write(void* e)
     //file.remove();
     temp.close();
     numberOfSteps++;
+    writeNumberOfSteps(numberOfSteps);
+    //qDebug(std::to_string(numberOfSteps).c_str());
     //temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
-    createImage();
+    //createImage();
 }
 
 void WriteVertexInFile::write(void* v)
@@ -166,8 +169,11 @@ void WriteVertexInFile::write(void* v)
     //file.remove();
     temp.close();
     numberOfSteps++;
+    writeNumberOfSteps(numberOfSteps);
+    /*qDebug("nn");
+    qDebug(std::to_string(numberOfSteps).c_str());*/
     //temp.rename("LabWorksSem2//LabWork2//Lab2//Files//graphviz.dat");
-    createImage();
+    //createImage();
 }
 
 void WriteInFile::createImage()
@@ -215,4 +221,16 @@ void WriteInFile::createImage()
     }*/
     //ShellExecute(graphvizPath," -Tpng "+filePath+ " -o " + imagePath )
     //ShellExecute("",NULL,"labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe"," -Tpng "+filePath+ " -o " + imagePath,"", "SW_HIDE");
+}
+
+void WriteInFile::writeNumberOfSteps(int numb)
+{
+    QFile numbofsteps("LabWorksSem2//LabWork2//Lab2//Files//NumberOfSteps.txt");
+    if(!numbofsteps.open(QIODevice::WriteOnly)) //open file
+    {
+        qDebug("Not open");
+        return;
+    }
+    numbofsteps.write(std::to_string(numb).c_str());
+    numbofsteps.close();
 }

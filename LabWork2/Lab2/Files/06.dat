@@ -1,11 +1,11 @@
 digraph G {
 node[shape="circle",style="filled"];
-1;
-2;
-3;
-4;
-5;
-6;
+1[color="red"];
+2[color="red"];
+3[color="red"];
+4[color="red"];
+5[color="red"];
+6[color="red"];
 7;
 8;
 9;

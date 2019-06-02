@@ -51,6 +51,7 @@ void MainWindow::on_enterMatrixPushButton_clicked()
 void MainWindow::on_numberOfVertexes_currentIndexChanged(int index)
 {
     n = index+2;
+    //ui->Run->setEnabled(false);
 }
 
 void MainWindow::printMatrix(QVector<QVector<int>> matrix)
@@ -127,7 +128,7 @@ void MainWindow::illustrate()
 {
     if(it) delete it;
     it = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images", QDirIterator::NoIteratorFlags);
-
+    changeAutomatically = true;
     int i = 0;
     while (it->hasNext() && changeAutomatically)
     {
@@ -138,7 +139,8 @@ void MainWindow::illustrate()
             ui->nextPushButton->show();
 
 
-            //qDebug(str.toStdString().c_str());
+            //qDebug(it->fileName().toStdString().c_str());
+            if(!fileIsValid(it->fileName())) break;
             setPicture(str);
             QTime time;
             time.start();
@@ -159,14 +161,55 @@ void MainWindow::setPicture(QString path)
 
 void MainWindow::clearDir(const QString& dirName)
 {
-    QDir dir("LabWorksSem2//LabWork2//Lab2//"+dirName);
-    dir.removeRecursively();
-    dir.setPath("LabWorksSem2//LabWork2//Lab2");
+    /*QString pp = "C:/Users/HP250/Documents/2semester/Proga/LABS/";
+    QDir dir1(pp+"LabWorksSem2/LabWork2/Lab2/"+dirName);
+    QDirIterator *localIt = new QDirIterator(pp+"LabWorksSem2/LabWork2/Lab2/"+dirName);
     int i = 0;
-    while(!dir.mkdir(dirName))
+    while(localIt->hasNext())
+    {
+        if(i > -1)
+        {
+            QFile dir(localIt->filePath());
+            //qDebug(localIt->filePath().toStdString().c_str());
+            //if(!dir.remove(localIt->filePath()))
+            if(!dir.remove())
+            {
+
+                //qDebug("was not deleted");
+            }
+        }
+        localIt->next();
+        i++;
+    }
+    delete localIt;*/
+    //dir.removeRecursively();
+    /*dir.setPath("LabWorksSem2//LabWork2//Lab2");
+    int i = 0;
+    while(!dir.mkpath(dirName))
     {
         qDebug(std::to_string(++i).c_str());
+    }*/
+}
+
+bool MainWindow::fileIsValid(QString fileName)
+{
+    bool converted = false;
+    int name = fileName.split(".")[0].toInt(&converted);
+    if(!converted) return false;
+    if(name <= numberOfSteps) return true;
+    return false;
+}
+
+void MainWindow::getNumberOfSteps()
+{
+    QFile numbofsteps("LabWorksSem2//LabWork2//Lab2//Files//NumberOfSteps.txt");
+    if(!numbofsteps.open(QIODevice::ReadOnly)) //open file
+    {
+        qDebug("Not open");
+        return;
     }
+    numberOfSteps = numbofsteps.readLine().toInt();
+    numbofsteps.close();
 }
 
 void MainWindow::on_Run_clicked()
@@ -182,9 +225,7 @@ void MainWindow::on_Run_clicked()
     }
 
 
-
     algoExecute();
-    //illustrate();
 }
 
 bool MainWindow::stop()
@@ -197,6 +238,7 @@ void MainWindow::on_prevPushButton_clicked()
 {
     changeAutomatically = false;
     int fileNumber = it->fileName().split(".")[0].toInt() - 1;
+    if(fileNumber > numberOfSteps) fileNumber = numberOfSteps-1;
     QString filePath = "";
     if(fileNumber > 9) filePath = QString::number(fileNumber)+".png";
     else filePath = "0" + QString::number(fileNumber)+".png";
@@ -219,7 +261,11 @@ void MainWindow::on_nextPushButton_clicked()
     changeAutomatically = false;
     if(it->hasNext())
     {
-        setPicture(it->next());
+        QString filePath = it->next();
+        QString filePath1 = it->fileName();
+        qDebug(filePath1.toStdString().c_str());
+        if(!fileIsValid(it->fileName())) return;
+        setPicture(filePath);
     }
 }
 
@@ -296,52 +342,38 @@ void MainWindow::algoExecute()
         QMessageBox::critical(nullptr, "Critical", str);
     }*/
 
-    clearDir("Images");
+    //clearDir("Images");
+
+    getNumberOfSteps();
 
     QDirIterator *itFiles = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Files", QDirIterator::NoIteratorFlags);
 
     int i = 0;
-    int numberOfSteps = 1;
+    int localNumberOfSteps = 1;
     while (itFiles->hasNext())
     {
         QString str = itFiles->next();
         if(i > 1)
         {
             QString imageName = "";
-            if(numberOfSteps > 9) imageName = QString::number(numberOfSteps)+".png";
-            else imageName = "0"+QString::number(numberOfSteps)+".png";
-            QString pp = "C:\\Users\\HP250\\Documents\\2semester\\Proga\\LABS\\";
+            if(localNumberOfSteps > 9) imageName = QString::number(localNumberOfSteps)+".png";
+            else imageName = "0"+QString::number(localNumberOfSteps)+".png";
+            if(!fileIsValid(imageName)) break;
             QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
             QString filePath = itFiles->filePath(); //"labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
             QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+imageName;
             QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
 
-            /*STARTUPINFOW si;
-            PROCESS_INFORMATION pi;
-
-            ZeroMemory(&si, sizeof(si));
-            si.cb = sizeof(si);
-            ZeroMemory(&pi, sizeof(pi));
-
-            if (CreateProcessW(myPath.toStdWString().c_str(), nullptr, nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
-            {
-                qDebug("create process");
-                WaitForSingleObject(pi.hProcess, INFINITE);
-                CloseHandle(pi.hProcess);
-                CloseHandle(pi.hThread);
-            }
-            system(myPath.toStdString().c_str());*/
 
             if(WinExec(myPath.toStdString().c_str(), SW_HIDE) > 31)
             {
-                qDebug("picture was generated");
+
             }
 
-            numberOfSteps++;
+            localNumberOfSteps++;
         }
         ++i;
     }
-    //illustrate();
 }
 
 void MainWindow::on_visualizePushButton_clicked()

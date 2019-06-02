@@ -59,6 +59,7 @@ public:
     void createImage();
     const QString fileName();
     const QString prevFileName();
+    void writeNumberOfSteps(int numb);
 };
 
 class WriteEdgeInFile :public WriteInFile

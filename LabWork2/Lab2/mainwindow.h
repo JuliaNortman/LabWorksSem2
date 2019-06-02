@@ -54,6 +54,8 @@ private:
     QDirIterator* it = nullptr;
     GraphAlgorithm* algo = nullptr; //pointer on the algorithm
     int algoNumber = 0;
+    int numberOfSteps = -1;
+
 
 private slots:
     void printMatrix(QVector<QVector<int>>); //print matrix in the matrix grid
@@ -76,6 +78,8 @@ private slots:
     void algoExecute();
     void clearDir(const QString& dirName);
     void on_visualizePushButton_clicked();
+    bool fileIsValid(QString fileName);
+    void getNumberOfSteps();
 };
 
 #endif // MAINWINDOW_H
