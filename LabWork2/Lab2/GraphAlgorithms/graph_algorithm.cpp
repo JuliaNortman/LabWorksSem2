@@ -27,7 +27,7 @@ void BFS::executeAlgorithm()
     int sizeGraph = graphInput.graph.size();
     QVector<bool> visited(sizeGraph, false);
     QVector<int> BFSTraverseResult; //contains vertex sequence
-    
+
     const int color = 0;// color number less than COLORS_VECTOR_SIZE
     QQueue<int> queue;
     visited[source] = true;
@@ -38,6 +38,7 @@ void BFS::executeAlgorithm()
         source = queue.front();
         BFSTraverseResult.push_back(source);
         writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
+        std::cout << source << " ";
         queue.pop_front();
         for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
         {
@@ -51,8 +52,20 @@ void BFS::executeAlgorithm()
             }
         }
     }
-    
-    //emit bfstraverseresult
+
+
+    QString result;
+    for (int i=0; i<BFSTraverseResult.size(); i++)
+    {
+        result += QString::number(BFSTraverseResult[i]) + " ";
+    }
+    QFile file (pathToFileResult);
+    if(!file.open(QIODevice::WriteOnly)) //open file
+    {
+        return;
+    }
+    file.write(result.toStdString().c_str());
+    file.close();
 }
 
 
@@ -90,8 +103,21 @@ void DFS::executeAlgorithm()
             }
         }
     }
-    
-    //emit dfstraverseresult
+
+    //writing result into the file
+    QString result;
+    for (int i=0; i<DFSTraverseResult.size(); i++)
+    {
+        result += QString::number(DFSTraverseResult[i]) + " ";
+    }
+    QFile file (pathToFileResult);
+    if(!file.open(QIODevice::WriteOnly)) //open file
+    {
+        return;
+    }
+    file.write(result.toStdString().c_str());
+    file.close();
+
 }
 
 
@@ -105,14 +131,14 @@ void ConnectedComponents::executeAlgorithm()
     QVector<int> used(sizeGraph, false); //set of used vetrices
 
     QString connectedComponents; //contains sequences of vertics (components) devided by commas
-    
+
     bool notAllVertUsed = true;
     stack.push(source);
     int color = 0; //color number less than COLORS_VECTOR_SIZE
     while(notAllVertUsed)
     {
-        if (source!=s){connectedComponents += ", ";} //if not first component then add a comma
-            
+        if (source!=s){connectedComponents += "| ";} //if not first component then add a devider
+
         while(!stack.empty())
         {
             source = stack.top();
@@ -137,7 +163,7 @@ void ConnectedComponents::executeAlgorithm()
                 }
             }
         }
-        
+
         color++; //change color
 
         //find any still not used vertes (not from previous connectivity component)
@@ -153,8 +179,15 @@ void ConnectedComponents::executeAlgorithm()
         }
         stack.push(indNotUsedVert);
     }
-    
-    //emit connectedComponents
+
+    //writing into the file
+    QFile file (pathToFileResult);
+    if(!file.open(QIODevice::WriteOnly)) //open file
+    {
+        return;
+    }
+    file.write(connectedComponents.toStdString().c_str());
+    file.close();
 }
 
 
@@ -200,15 +233,20 @@ void ColorGraph::executeAlgorithm()
             }
         }
     }
-    
-    /*QString result;
+
+    //prearing to and writing into the file
+    QString result;
     for (int i=0; i<resultVerticsColors.size(); i++)
     {
-        result += QString::number(i) + "-" + resultVerticsColors[i]+ ", ";
+        result += QString::number(i) + " of color " + resultVerticsColors[i]+ "| ";
     }
-    
-    //emit result;
-    */
+    QFile file (pathToFileResult);
+    if(!file.open(QIODevice::WriteOnly)) //open file
+    {
+        return;
+    }
+    file.write(result.toStdString().c_str());
+    file.close();
 }
 
 void DetectCycle::executeAlgorithm()
@@ -219,6 +257,13 @@ void DetectCycle::executeAlgorithm()
     QVector<bool> visited(sizeGraph, false); //visited vertices
     QStack<int> stack; //stack of current vertices to concern
     QVector<int> used(sizeGraph, false); //set of used vetrices
+
+
+    QFile file (pathToFileResult);
+    file.open(QIODevice::WriteOnly); //open file
+
+    //file.close();
+
 
     int color = 0; // used as color identifier
 
@@ -242,7 +287,7 @@ void DetectCycle::executeAlgorithm()
                 if (!newComponent)
                 {
                     writeFileHandler->write(new Edge(source, previous[source], COLORS_VECTOR[color]));
-                    //std::cout<<previous[source]<<"-"<<source<<"__";
+                    file.write((QString::number(previous[source]) + "--" + QString::number(source)+ " ").toStdString().c_str());
                 }
             }
             else //has cycle
@@ -252,10 +297,14 @@ void DetectCycle::executeAlgorithm()
                     if ((graphInput.graph[source][i] != graphInput.NO_EDGE) && (previous[source]!=i) && visited[i])
                     {
                        writeFileHandler->write(new Edge(i, source, COLORS_VECTOR[++color]));
-                        //std::cout<<source<<"-"<<i<<"_stop.";
+                       file.write((QString::number(source) +"--"+ QString::number(i) + " CYCLE FOUND").toStdString().c_str());
+                       //std::cout<<source<<"-"<<i<<"_stop.";
+                       file.close();
+                       return;
                     }
                 }
-                return;
+                //file.close();
+                //return;
             }
 
             for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
@@ -267,10 +316,12 @@ void DetectCycle::executeAlgorithm()
                         stack.push(adj_v);
                         previous[adj_v] = source;
                     }
-                    else if (visited[adj_v] && graphInput.oriented)
+                    else if (visited[adj_v] && graphInput.oriented) //cycle found
                     {
                         writeFileHandler->write(new Edge(adj_v, source, COLORS_VECTOR[++color]));
-                        std::cout<<source<<"---"<<adj_v<<"______";
+                        file.write((QString::number(source) + "--" + QString::number(adj_v) + " CYCLE FOUND").toStdString().c_str());
+                        //std::cout<<source<<"---"<<adj_v<<"______";
+                        file.close();
                         return;
                     }
                 }
@@ -294,6 +345,9 @@ void DetectCycle::executeAlgorithm()
         }
         stack.push(indNotUsedVert);
     }
+
+    file.write("| CYCLE NOT DETECTED |");
+    file.close();
 }
 
 void ShortestPathes::executeAlgorithm()

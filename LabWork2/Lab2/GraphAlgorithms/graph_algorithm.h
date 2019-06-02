@@ -3,6 +3,7 @@
 
 #include<QVector>
 #include<QString>
+#include<QFile>
 #include "graph.h"
 #include "writeinfile.h"
 
@@ -30,6 +31,7 @@ protected:
     int s = 0; //source
     WriteInFile *writeFileHandler; //=NULL;
     void setSourceVertex(int source);
+    const QString pathToFileResult = "output.txt";
 public:
     GraphAlgorithm(Graph &graph) : graphInput(graph){}
     virtual ~GraphAlgorithm() = default;
