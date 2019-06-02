@@ -46,7 +46,16 @@ WriteInFile::WriteInFile(const Graph& G)
             else if(!G.oriented)
             {
                 if(j < i) continue;
-                file.write((QString::number(i+1)+"->"+QString::number(j+1)+"[arrowhead=\"none\"];\n").toStdString().c_str());
+                if(!G.weighted)
+                {
+                    file.write((QString::number(i+1)+"->"+QString::number(j+1)+"[arrowhead=\"none\"];\n").toStdString().c_str());
+                }
+                else
+                {
+                    file.write((QString::number(i+1)+"->"+QString::number(j+1)
+                                +"[arrowhead=\"none\",label=\""+QString::number(G.graph[i][j])+"\"];\n").toStdString().c_str());
+                }
+
             }
             else
             {
