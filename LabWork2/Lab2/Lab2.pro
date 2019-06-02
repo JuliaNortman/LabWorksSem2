@@ -27,11 +27,13 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    matrix.cpp
+    matrix.cpp \
+    writeinfile.cpp
 
 HEADERS += \
         mainwindow.h \
-    matrix.h
+    matrix.h \
+    writeinfile.h
 
 FORMS += \
         mainwindow.ui \
@@ -41,3 +43,5 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES +=

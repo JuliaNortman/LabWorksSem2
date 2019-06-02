@@ -4,20 +4,25 @@
 #include <QDialog>
 #include <QVector>
 #include <QLineEdit>
+#include <QIntValidator>
 
+
+/**
+ * @brief The Cell class that represents cell in the matrix output
+ */
 class Cell : public QLineEdit
 {
     Q_OBJECT
 
 public:
     Cell();
-
-private:
 };
 
 namespace Ui {
 class Matrix;
 }
+
+
 
 class Matrix : public QDialog
 {
@@ -28,6 +33,11 @@ public:
     ~Matrix();
 
 private slots:
+
+    /**
+     * @brief checks if the input is valid
+     * and emits signal matrix()
+     */
     void on_OKPushButton_clicked();
 
 private:
@@ -36,9 +46,15 @@ private:
     QVector<QVector<int>> matr; //matrix n*n that represents graph
     QVector<QVector<Cell*>> cells; //QLable that allow to enter the graph matrix
 
-    void warning();//show the warning message when not all the cells are filled
+    /**
+     * @brief show the warning message when not all the cells are filled
+     */
+    void warning();
 
 signals:
+    /**
+     * @brief emits in order to pass the matrix to the mainwindow
+     */
     void matrix(QVector<QVector<int>>);
 };
 
