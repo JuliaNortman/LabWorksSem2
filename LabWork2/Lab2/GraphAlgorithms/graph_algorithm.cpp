@@ -258,12 +258,8 @@ void DetectCycle::executeAlgorithm()
     QStack<int> stack; //stack of current vertices to concern
     QVector<int> used(sizeGraph, false); //set of used vetrices
 
-
     QFile file (pathToFileResult);
     file.open(QIODevice::WriteOnly); //open file
-
-    //file.close();
-
 
     int color = 0; // used as color identifier
 
@@ -287,7 +283,7 @@ void DetectCycle::executeAlgorithm()
                 if (!newComponent)
                 {
                     writeFileHandler->write(new Edge(source, previous[source], COLORS_VECTOR[color]));
-                    file.write((QString::number(previous[source]) + "--" + QString::number(source)+ " ").toStdString().c_str());
+                    file.write((QString::number(previous[source]) + "--" + QString::number(source)+ "\n").toStdString().c_str());
                 }
             }
             else //has cycle
@@ -297,14 +293,11 @@ void DetectCycle::executeAlgorithm()
                     if ((graphInput.graph[source][i] != graphInput.NO_EDGE) && (previous[source]!=i) && visited[i])
                     {
                        writeFileHandler->write(new Edge(i, source, COLORS_VECTOR[++color]));
-                       file.write((QString::number(source) +"--"+ QString::number(i) + " CYCLE FOUND").toStdString().c_str());
-                       //std::cout<<source<<"-"<<i<<"_stop.";
+                       file.write((QString::number(source) +"--"+ QString::number(i) + "\nCYCLE FOUND").toStdString().c_str());
                        file.close();
                        return;
                     }
                 }
-                //file.close();
-                //return;
             }
 
             for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
@@ -319,8 +312,7 @@ void DetectCycle::executeAlgorithm()
                     else if (visited[adj_v] && graphInput.oriented) //cycle found
                     {
                         writeFileHandler->write(new Edge(adj_v, source, COLORS_VECTOR[++color]));
-                        file.write((QString::number(source) + "--" + QString::number(adj_v) + " CYCLE FOUND").toStdString().c_str());
-                        //std::cout<<source<<"---"<<adj_v<<"______";
+                        file.write((QString::number(source) + "--" + QString::number(adj_v) + "\nCYCLE FOUND").toStdString().c_str());
                         file.close();
                         return;
                     }
@@ -346,7 +338,7 @@ void DetectCycle::executeAlgorithm()
         stack.push(indNotUsedVert);
     }
 
-    file.write("| CYCLE NOT DETECTED |");
+    file.write("\n| CYCLE NOT DETECTED |");
     file.close();
 }
 
@@ -386,9 +378,29 @@ void ShortestPathes::executeAlgorithm()
                 }
             }
         }
-
     }
-    //else weighted
+    else
+    {
+        throw "NOT APPLIED TO SUCH A GRAPH";
+    }
+
+    //preparing and writing result file
+    QString result;
+    for (int i = 0; i < shortestDistancesFromS.size(); i++)
+    {
+        if ((shortestDistancesFromS[i] != graphInput.INF) && (i!=s))
+        {
+            result += QString::number(s) + "-->" + QString::number(i) + " : " + QString::number(shortestDistancesFromS[i]) + " \n";
+        }
+    }
+
+    QFile file (pathToFileResult);
+    if(!file.open(QIODevice::WriteOnly)) //open file
+    {
+        return;
+    }
+    file.write(result.toStdString().c_str());
+    file.close();
 }
 
 
@@ -396,8 +408,8 @@ void MinimalSpanningTree::executeAlgorithm()
 {
     if (!graphInput.isConnected() || graphInput.oriented || !graphInput.weighted)
     {
-        //throw "Algorithm is not applied to this graph";
-        return;
+        throw "NOT APPLIED TO SUCH A GRAPH";
+        //return;
     }
     //else
 
@@ -442,13 +454,17 @@ void MinimalSpanningTree::executeAlgorithm()
             minTree.insert(std::pair<int, std::pair<int,int>> (graphInput.graph[i][parent[i]], std::pair<int,int>(parent[i],i)));
         }
 
+
+    QFile file (pathToFileResult);
+    file.open(QIODevice::WriteOnly); //open file to put result in
     int color = 0;
     std::map<int, std::pair<int,int>>::iterator it = minTree.begin();
     for (;it!=minTree.end(); it++)
     {
         writeFileHandler->write(new Edge(it->second.second, it->second.first, COLORS_VECTOR[color], it->first));
+        file.write((QString::number(it->second.first) + "--" + QString::number(it->second.second) + " \n").toStdString().c_str());
     }
 
-
+    file.close();
 }
 
