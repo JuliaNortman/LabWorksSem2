@@ -1,12 +1,14 @@
 #ifndef WRITEINFILE_H
 #define WRITEINFILE_H
 
+#include "GraphAlgorithms/graph.h"
+
 #include <QObject>
 #include <QVector>
 #include <QFile>
 
 //test, should be deleted
-class Graph
+/*class Graph
 {
 private:
 
@@ -25,7 +27,7 @@ public:
     }
 
     const int NO_EDGE = 0;
-};
+};*/
 
 
 /**

@@ -408,7 +408,8 @@ void MinimalSpanningTree::executeAlgorithm()
 {
     if (!graphInput.isConnected() || graphInput.oriented || !graphInput.weighted)
     {
-        throw "NOT APPLIED TO SUCH A GRAPH";
+        const QString str = "NOT APPLIED TO SUCH A GRAPH";
+        throw str;
         //return;
     }
     //else

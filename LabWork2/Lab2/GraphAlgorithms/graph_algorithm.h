@@ -31,7 +31,7 @@ protected:
     int s = 0; //source
     WriteInFile *writeFileHandler; //=NULL;
     void setSourceVertex(int source);
-    const QString pathToFileResult = "output.txt";
+    const QString pathToFileResult = "LabWorksSem2//LabWork2//Lab2//Files//output.txt";
 public:
     GraphAlgorithm(Graph &graph) : graphInput(graph){}
     virtual ~GraphAlgorithm() = default;

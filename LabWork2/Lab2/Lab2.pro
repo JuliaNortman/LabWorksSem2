@@ -28,12 +28,16 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     matrix.cpp \
-    writeinfile.cpp
+    writeinfile.cpp \
+    GraphAlgorithms/graph.cpp \
+    GraphAlgorithms/graph_algorithm.cpp \
 
 HEADERS += \
         mainwindow.h \
     matrix.h \
-    writeinfile.h
+    writeinfile.h \
+    GraphAlgorithms/graph.h \
+    GraphAlgorithms/graph_algorithm.h \
 
 FORMS += \
         mainwindow.ui \

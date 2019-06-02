@@ -209,21 +209,19 @@ void MainWindow::on_Run_clicked()
     setPicture("");
     ui->resultTextBrowser->setText("");
 
-    WriteEdgeInFile f(g);
+/*    WriteEdgeInFile f(g);
     for(int i = 0; i < n; ++i)
     {
         for(int j = 0; j < n; ++j)
         {
             if(graph[i][j] == 0) continue;
 
-            /*qDebug(std::to_string(i).c_str());
-            qDebug(std::to_string(j).c_str());*/
 
             Edge v(i, j, "red");
             f.write(&v);
         }
     }
-
+*/
 
     algoExecute();
     setOutput();
@@ -320,43 +318,43 @@ void MainWindow::algoExecute()
     {
     case 0:
     {
-        //algo = new BFS(G);
+        algo = new BFS(G);
         qDebug("BFS");
         break;
     }
     case 1:
     {
-        //algo = new DFS(G);
+        algo = new DFS(G);
         qDebug("DFS");
         break;
     }
     case 2:
     {
-        //algo = new ConnectedComponents(G);
+        algo = new ConnectedComponents(G);
         qDebug("ConnectedComponents ");
         break;
     }
     case 3:
     {
-        //algo = new ColorGraph(G);
+        algo = new ColorGraph(G);
         qDebug("ColorGraph");
         break;
     }
     case 4:
     {
-        //algo = new DetectCycle(G);
+        algo = new DetectCycle(G);
         qDebug("DetectCycle");
         break;
     }
     case 5:
     {
-        //algo = new ShortestPathes(G);
+        algo = new ShortestPathes(G);
         qDebug("ShortestPathes");
         break;
     }
     case 6:
     {
-        //algo = new MinimalSpanningTree(G);
+        algo = new MinimalSpanningTree(G);
         qDebug("MinimalSpanningTree");
         break;
     }
@@ -365,20 +363,30 @@ void MainWindow::algoExecute()
         break;
     }
     }
-    /*try
+    try
     {
         algo->executeAlgorithm();
     }
-    catch (const QString& str)
+    catch (const QString str)
     {
         //call message box to show the problem
+        QMessageBox::critical(nullptr, "Critical", str);
+    }
+    catch(std::bad_alloc &e)
+    {
+        QString str = e.what();
+        QMessageBox::critical(nullptr, "Critical", str);
+    }
+    catch(std::out_of_range &e)
+    {
+        QString str = e.what();
         QMessageBox::critical(nullptr, "Critical", str);
     }
     catch(...)
     {
         QString str = "Something went wrong! Please try again later";
         QMessageBox::critical(nullptr, "Critical", str);
-    }*/
+    }
 
 
     getNumberOfSteps();

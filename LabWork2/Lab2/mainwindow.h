@@ -3,7 +3,7 @@
 
 #include "matrix.h"
 #include "writeinfile.h"
-//#include "GraphAlgorithm/graph_algorithm.h"
+#include "GraphAlgorithms/graph_algorithm.h"
 
 #include <QMainWindow>
 #include <QRandomGenerator>
@@ -20,7 +20,7 @@ class MainWindow;
 /*should be deleted
 * used only for correct work of mainWindow
 */
-class GraphAlgorithm
+/*class GraphAlgorithm
 {
 protected:
     Graph graphInput;
@@ -31,7 +31,7 @@ public:
     GraphAlgorithm(Graph &graph) : graphInput(graph){}
     virtual ~GraphAlgorithm() = default;
     virtual void executeAlgorithm() = 0;
-};
+};*/
 
 class MainWindow : public QMainWindow
 {
