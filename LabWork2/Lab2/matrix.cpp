@@ -4,6 +4,9 @@
 Cell::Cell()
 {
     setFixedSize(35, 28);
+    setValidator(new QIntValidator(-1000, 1000));
+    setStyleSheet("QLineEdit {  border: 2px solid gray;"
+                                                "border-radius: 5px;}");
 }
 
 Matrix::Matrix(const int &dim, QWidget *parent) :

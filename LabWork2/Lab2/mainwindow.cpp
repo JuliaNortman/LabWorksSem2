@@ -19,13 +19,15 @@ MainWindow::MainWindow(QWidget *parent) :
         for(int j = 0; j < MAXSIZE; ++j)
         {
             labels[i].push_back(new QLabel);
-            labels[i][j]->setFixedSize(20, 10);
+            labels[i][j]->setFixedSize(25, 10);
         }
     }
 
     //hiding buttons
     ui->prevPushButton->hide();
     ui->nextPushButton->hide();
+    ui->Run->setEnabled(false);
+    ui->visualizePushButton->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -51,11 +53,17 @@ void MainWindow::on_enterMatrixPushButton_clicked()
 void MainWindow::on_numberOfVertexes_currentIndexChanged(int index)
 {
     n = index+2;
-    //ui->Run->setEnabled(false);
+    ui->Run->setEnabled(false);
+    ui->visualizePushButton->setEnabled(false);
+    ui->prevPushButton->hide();
+    ui->nextPushButton->hide();
+    clearLabels();
+    setPicture("");
 }
 
 void MainWindow::printMatrix(QVector<QVector<int>> matrix)
 {
+    ui->Run->setEnabled(true);
     graph = matrix;
     clearLabels(); //clear previous text
     for(int i = 0; i < n; ++i)
@@ -359,7 +367,7 @@ void MainWindow::algoExecute()
             if(localNumberOfSteps > 9) imageName = QString::number(localNumberOfSteps)+".png";
             else imageName = "0"+QString::number(localNumberOfSteps)+".png";
             if(!fileIsValid(imageName)) break;
-            QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
+            QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\neato.exe";
             QString filePath = itFiles->filePath(); //"labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
             QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+imageName;
             QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
@@ -374,6 +382,7 @@ void MainWindow::algoExecute()
         }
         ++i;
     }
+    ui->visualizePushButton->setEnabled(true);
 }
 
 void MainWindow::on_visualizePushButton_clicked()

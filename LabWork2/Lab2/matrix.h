@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QVector>
 #include <QLineEdit>
+#include <QIntValidator>
 
 class Cell : public QLineEdit
 {
