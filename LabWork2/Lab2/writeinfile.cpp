@@ -5,15 +5,15 @@
 
 Vertex::Vertex(int vertex, QString color, int label)
 {
-    this->vertex = QString::number(vertex+1);
+    this->vertex = QString::number(vertex);
     this->color = color;
     this->label = QString::number(label);
 }
 
 Edge::Edge(int from, int to, QString color, int label)
 {
-    this->from = QString::number(from+1);
-    this->to = QString::number(to+1);
+    this->from = QString::number(from);
+    this->to = QString::number(to);
     this->color = color;
     this->label = QString::number(label);
 }
@@ -34,7 +34,7 @@ WriteInFile::WriteInFile(const Graph& G)
 
     for(int i = 0; i < G.graph.size();++i)
     {
-        file.write((QString::number(i+1)+";\n").toStdString().c_str());
+        file.write((QString::number(i)+";\n").toStdString().c_str());
     }
 
     for(int i = 0; i < G.graph.size(); ++i)
@@ -48,11 +48,11 @@ WriteInFile::WriteInFile(const Graph& G)
                 if(j < i) continue;
                 if(!G.weighted)
                 {
-                    file.write((QString::number(i+1)+"->"+QString::number(j+1)+"[arrowhead=\"none\"];\n").toStdString().c_str());
+                    file.write((QString::number(i)+"->"+QString::number(j)+"[arrowhead=\"none\"];\n").toStdString().c_str());
                 }
                 else
                 {
-                    file.write((QString::number(i+1)+"->"+QString::number(j+1)
+                    file.write((QString::number(i)+"->"+QString::number(j)
                                 +"[arrowhead=\"none\",label=\""+QString::number(G.graph[i][j])+"\"];\n").toStdString().c_str());
                 }
 
@@ -61,11 +61,11 @@ WriteInFile::WriteInFile(const Graph& G)
             {
                 if(!G.weighted)
                 {
-                    file.write((QString::number(i+1)+"->"+QString::number(j+1)+";\n").toStdString().c_str());
+                    file.write((QString::number(i)+"->"+QString::number(j)+";\n").toStdString().c_str());
                 }
                 else
                 {
-                    file.write((QString::number(i+1)+"->"+QString::number(j+1)+"[label=\""
+                    file.write((QString::number(i)+"->"+QString::number(j)+"[label=\""
                                 +QString::number(G.graph[i][j])+"\"];\n").toStdString().c_str());
                 }
             }

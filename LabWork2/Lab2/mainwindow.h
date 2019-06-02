@@ -172,6 +172,12 @@ private slots:
      * @brief print the algo result on in the textArea
      */
     void setOutput();
+
+    /**
+     * @brief set the graphLabel, resultOutput and matrix
+     * to be empty
+     */
+    void clearOutput();
 };
 
 #endif // MAINWINDOW_H

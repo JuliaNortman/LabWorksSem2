@@ -24,11 +24,12 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     //hiding buttons
-    ui->prevPushButton->hide();
+    /*ui->prevPushButton->hide();
     ui->nextPushButton->hide();
     ui->Run->setEnabled(false);
     ui->visualizePushButton->setEnabled(false);
-    ui->stopPushButton->hide();
+    ui->stopPushButton->hide();*/
+    clearOutput();
 }
 
 MainWindow::~MainWindow()
@@ -45,6 +46,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_enterMatrixPushButton_clicked()
 {
+    clearOutput();
     //create window to enter users matrix
     Matrix* matr = new Matrix(n);
     connect(matr, SIGNAL(matrix(QVector<QVector<int>>)), this, SLOT(printMatrix(QVector<QVector<int>>)));
@@ -58,18 +60,20 @@ void MainWindow::on_numberOfVertexes_currentIndexChanged(int index)
     n = index+2;
 
     //hide buttons and clear previous output
-    ui->Run->setEnabled(false);
+    clearOutput();
+    /*ui->Run->setEnabled(false);
     ui->visualizePushButton->setEnabled(false);
     ui->prevPushButton->hide();
     ui->nextPushButton->hide();
     ui->stopPushButton->hide();
     clearLabels();
     setPicture("");
-    ui->resultTextBrowser->setText("");
+    ui->resultTextBrowser->setText("");*/
 }
 
 void MainWindow::printMatrix(QVector<QVector<int>> matrix)
 {
+    clearOutput();
     ui->Run->setEnabled(true);
     graph = matrix;
     clearLabels(); //clear previous text
@@ -101,6 +105,9 @@ void MainWindow::clearLabels()
 
 void MainWindow::on_randomButton_clicked()
 {
+    //clear output
+    clearOutput();
+    ui->Run->setEnabled(true);
     //allocate memory for graph
     graph.resize(n);
     for(int i = 0; i < n; ++i) graph[i].resize(n);
@@ -138,12 +145,14 @@ void MainWindow::on_randomButton_clicked()
 
 void MainWindow::on_directed_stateChanged(int arg1)
 {
+    clearOutput();
     if(arg1 == Qt::Checked) directed = true;
     else directed = false;
 }
 
 void MainWindow::on_weightedGraph_stateChanged(int arg1)
 {
+    clearOutput();
     if(arg1 == Qt::Checked) weighted = true;
     else weighted = false;
 }
@@ -209,20 +218,6 @@ void MainWindow::on_Run_clicked()
     setPicture("");
     ui->resultTextBrowser->setText("");
 
-/*    WriteEdgeInFile f(g);
-    for(int i = 0; i < n; ++i)
-    {
-        for(int j = 0; j < n; ++j)
-        {
-            if(graph[i][j] == 0) continue;
-
-
-            Edge v(i, j, "red");
-            f.write(&v);
-        }
-    }
-*/
-
     algoExecute();
     setOutput();
 }
@@ -274,6 +269,7 @@ void MainWindow::on_nextPushButton_clicked()
 void MainWindow::on_algorithm_currentIndexChanged(int index)
 {
     algoNumber = index;
+    clearOutput();
 }
 
 void MainWindow::createImage()
@@ -424,4 +420,20 @@ void MainWindow::setOutput()
         QString line = output.readLine();
         ui->resultTextBrowser->append(line);
     }
+}
+
+void MainWindow::clearOutput()
+{
+    ui->Run->setEnabled(false);
+    ui->visualizePushButton->setEnabled(false);
+    ui->prevPushButton->hide();
+    ui->prevPushButton->hide();
+    ui->stopPushButton->hide();
+    setPicture("");
+    clearLabels();
+    ui->resultTextBrowser->setText("");
+
+    QFile file("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
+    file.open(QIODevice::WriteOnly);
+    file.close();
 }

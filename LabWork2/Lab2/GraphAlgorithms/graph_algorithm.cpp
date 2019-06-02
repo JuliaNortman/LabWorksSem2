@@ -198,6 +198,10 @@ void ColorGraph::executeAlgorithm()
     int source = 0;
     resultVerticsColors[source] = 0;
 
+    QFile file (pathToFileResult);
+    file.open(QIODevice::WriteOnly); //open file
+    file.write((QString::number(source) + " of color " + "0\n").toStdString().c_str());
+
     writeFileHandler->write(new Vertex(source, COLORS_VECTOR[0])); //write in file operation
     QVector<bool> availableColors(sizeGraph, false);
 
@@ -221,6 +225,7 @@ void ColorGraph::executeAlgorithm()
         }
         resultVerticsColors[u] = cr;
         writeFileHandler->write(new Vertex(u, COLORS_VECTOR[cr%COLORS_VECTOR_SIZE])); //safe write in file operation
+        file.write((QString::number(u) + " of color " + QString::number(cr) + " \n").toStdString().c_str());
 
         for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
         {
@@ -234,18 +239,6 @@ void ColorGraph::executeAlgorithm()
         }
     }
 
-    //prearing to and writing into the file
-    QString result;
-    for (int i=0; i<resultVerticsColors.size(); i++)
-    {
-        result += QString::number(i) + " of color " + resultVerticsColors[i]+ "| ";
-    }
-    QFile file (pathToFileResult);
-    if(!file.open(QIODevice::WriteOnly)) //open file
-    {
-        return;
-    }
-    file.write(result.toStdString().c_str());
     file.close();
 }
 
@@ -448,10 +441,10 @@ void MinimalSpanningTree::executeAlgorithm()
         }
 
     //got spanning tree and prepare it to step visualizaion
-   std::map<int, std::pair<int,int>> minTree;
+   std::multimap<int, std::pair<int,int>> minTree;
     for (int i = 1; i < sizeGraph; i++)
         {
-            //cout <<  parent[i] << "---" << i << "   " <<graph[i][parent[i]] << endl;
+            //std::cout <<  parent[i] << "---" << i << "   " <<graphInput.graph[i][parent[i]] << std::endl;
             minTree.insert(std::pair<int, std::pair<int,int>> (graphInput.graph[i][parent[i]], std::pair<int,int>(parent[i],i)));
         }
 
@@ -459,7 +452,7 @@ void MinimalSpanningTree::executeAlgorithm()
     QFile file (pathToFileResult);
     file.open(QIODevice::WriteOnly); //open file to put result in
     int color = 0;
-    std::map<int, std::pair<int,int>>::iterator it = minTree.begin();
+    std::multimap<int, std::pair<int,int>>::iterator it = minTree.begin();
     for (;it!=minTree.end(); it++)
     {
         writeFileHandler->write(new Edge(it->second.second, it->second.first, COLORS_VECTOR[color], it->first));
