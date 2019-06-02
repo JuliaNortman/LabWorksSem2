@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->nextPushButton->hide();
     ui->Run->setEnabled(false);
     ui->visualizePushButton->setEnabled(false);
+    ui->stopPushButton->hide();
 }
 
 MainWindow::~MainWindow()
@@ -44,6 +45,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_enterMatrixPushButton_clicked()
 {
+    //create window to enter users matrix
     Matrix* matr = new Matrix(n);
     connect(matr, SIGNAL(matrix(QVector<QVector<int>>)), this, SLOT(printMatrix(QVector<QVector<int>>)));
     matr->exec();
@@ -52,11 +54,15 @@ void MainWindow::on_enterMatrixPushButton_clicked()
 
 void MainWindow::on_numberOfVertexes_currentIndexChanged(int index)
 {
+    //set current number of vertexes
     n = index+2;
+
+    //hide buttons and clear previous output
     ui->Run->setEnabled(false);
     ui->visualizePushButton->setEnabled(false);
     ui->prevPushButton->hide();
     ui->nextPushButton->hide();
+    ui->stopPushButton->hide();
     clearLabels();
     setPicture("");
 }
@@ -76,8 +82,16 @@ void MainWindow::printMatrix(QVector<QVector<int>> matrix)
     }
 }
 
+void MainWindow::setPicture(QString path)
+{
+    QPixmap image(path);
+    ui->graphLabel->setPixmap(image);
+    ui->graphLabel->setScaledContents(true);
+}
+
 void MainWindow::clearLabels()
 {
+    //clear previous text on the labels
     for(int i = 0; i < MAXSIZE; ++i)
     {
         for(int j = 0; j < MAXSIZE; ++j) labels[i][j]->setText("");
@@ -99,7 +113,7 @@ void MainWindow::on_randomButton_clicked()
             if(j == i) graph[i][j] = 0;
             else
             {
-                if(weighted)
+                if(weighted) //if weighted than generate the weight
                 {
                    graph[i][j] = qrand()%10;
                 }
@@ -107,7 +121,7 @@ void MainWindow::on_randomButton_clicked()
             }
         }
     }
-    /*if graph is undirecteed then need to generate only half of the matrix
+    /*if graph is undirected then need to generate only half of the matrix
     the rest will bw symmetric*/
     if(!directed)
     {
@@ -117,6 +131,7 @@ void MainWindow::on_randomButton_clicked()
         }
     }
 
+    //output the matrix on te screen
     printMatrix(graph);
 }
 
@@ -134,20 +149,19 @@ void MainWindow::on_weightedGraph_stateChanged(int arg1)
 
 void MainWindow::illustrate()
 {
-    if(it) delete it;
-    it = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images", QDirIterator::NoIteratorFlags);
-    changeAutomatically = true;
+    if(it) delete it; //delete previuos iterator
+    it = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images", QDirIterator::NoIteratorFlags);//set iterator
+    changeAutomatically = true; //in order to cahnge pictures on timer
     int i = 0;
     while (it->hasNext() && changeAutomatically)
     {
         QString str = it->next();
         if(i > 1)
         {
+            ui->stopPushButton->show();
             ui->prevPushButton->show();
             ui->nextPushButton->show();
 
-
-            //qDebug(it->fileName().toStdString().c_str());
             if(!fileIsValid(it->fileName())) break;
             setPicture(str);
             QTime time;
@@ -160,48 +174,15 @@ void MainWindow::illustrate()
     }
 }
 
-void MainWindow::setPicture(QString path)
-{
-    QPixmap image(path);
-    ui->graphLabel->setPixmap(image);
-    ui->graphLabel->setScaledContents(true);
-}
-
-void MainWindow::clearDir(const QString& dirName)
-{
-    /*QString pp = "C:/Users/HP250/Documents/2semester/Proga/LABS/";
-    QDir dir1(pp+"LabWorksSem2/LabWork2/Lab2/"+dirName);
-    QDirIterator *localIt = new QDirIterator(pp+"LabWorksSem2/LabWork2/Lab2/"+dirName);
-    int i = 0;
-    while(localIt->hasNext())
-    {
-        if(i > -1)
-        {
-            QFile dir(localIt->filePath());
-            //qDebug(localIt->filePath().toStdString().c_str());
-            //if(!dir.remove(localIt->filePath()))
-            if(!dir.remove())
-            {
-
-                //qDebug("was not deleted");
-            }
-        }
-        localIt->next();
-        i++;
-    }
-    delete localIt;*/
-    //dir.removeRecursively();
-    /*dir.setPath("LabWorksSem2//LabWork2//Lab2");
-    int i = 0;
-    while(!dir.mkpath(dirName))
-    {
-        qDebug(std::to_string(++i).c_str());
-    }*/
-}
-
 bool MainWindow::fileIsValid(QString fileName)
 {
     bool converted = false;
+    /*
+      * Get the file name without its expansion
+      * Convert the file name into the step
+      * Check if the step is less or equal then the maximum number of steps
+      * in the algorithm
+    */
     int name = fileName.split(".")[0].toInt(&converted);
     if(!converted) return false;
     if(name <= numberOfSteps) return true;
@@ -216,15 +197,14 @@ void MainWindow::getNumberOfSteps()
         qDebug("Not open");
         return;
     }
-    numberOfSteps = numbofsteps.readLine().toInt();
+    numberOfSteps = numbofsteps.readLine().toInt();//read number of steps from the file
     numbofsteps.close();
 }
 
 void MainWindow::on_Run_clicked()
 {
-    clearDir("Files");
-
     Graph g(graph, directed, weighted);
+
     WriteVertexInFile f(g);
     for(int i = 0; i < n; ++i)
     {
@@ -236,15 +216,13 @@ void MainWindow::on_Run_clicked()
     algoExecute();
 }
 
-bool MainWindow::stop()
-{
-    static bool st = false;
-    return st;
-}
 
 void MainWindow::on_prevPushButton_clicked()
 {
     changeAutomatically = false;
+    ui->stopPushButton->setEnabled(false);
+
+    //find the previous step
     int fileNumber = it->fileName().split(".")[0].toInt() - 1;
     if(fileNumber > numberOfSteps) fileNumber = numberOfSteps-1;
     QString filePath = "";
@@ -256,7 +234,9 @@ void MainWindow::on_prevPushButton_clicked()
         setPicture(path);
     }
     else return;
-    delete it;
+    if(it) delete it;
+
+    //set the current iterator to be the previous step
     it = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images//", QDirIterator::NoIteratorFlags);
     while(path != it->filePath() && it->hasNext())
     {
@@ -266,7 +246,10 @@ void MainWindow::on_prevPushButton_clicked()
 
 void MainWindow::on_nextPushButton_clicked()
 {
+    //check if the file is valid then show it
     changeAutomatically = false;
+    ui->stopPushButton->setEnabled(false);
+
     if(it->hasNext())
     {
         QString filePath = it->next();
@@ -282,10 +265,44 @@ void MainWindow::on_algorithm_currentIndexChanged(int index)
     algoNumber = index;
 }
 
+void MainWindow::createImage()
+{
+    QDirIterator *itFiles = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Files", QDirIterator::NoIteratorFlags);
+
+    int i = 0;
+    int localNumberOfSteps = 1;
+    while (itFiles->hasNext())
+    {
+        QString str = itFiles->next();
+        if(i > 1)
+        {
+            QString imageName = "";
+            if(localNumberOfSteps > 9) imageName = QString::number(localNumberOfSteps)+".png";
+            else imageName = "0"+QString::number(localNumberOfSteps)+".png";
+            if(!fileIsValid(imageName)) break;
+            QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
+            QString filePath = itFiles->filePath(); //"labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
+            QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+imageName;
+            QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
+
+
+            if(WinExec(myPath.toStdString().c_str(), SW_HIDE) > 31)
+            {
+
+            }
+
+            localNumberOfSteps++;
+        }
+        ++i;
+    }
+}
+
 void MainWindow::algoExecute()
 {
     if(algo) delete algo;
     Graph G(graph, directed, weighted);
+
+    //choose what algo to be executed
     switch (algoNumber)
     {
     case 0:
@@ -350,42 +367,20 @@ void MainWindow::algoExecute()
         QMessageBox::critical(nullptr, "Critical", str);
     }*/
 
-    //clearDir("Images");
 
     getNumberOfSteps();
 
-    QDirIterator *itFiles = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Files", QDirIterator::NoIteratorFlags);
+    createImage();
 
-    int i = 0;
-    int localNumberOfSteps = 1;
-    while (itFiles->hasNext())
-    {
-        QString str = itFiles->next();
-        if(i > 1)
-        {
-            QString imageName = "";
-            if(localNumberOfSteps > 9) imageName = QString::number(localNumberOfSteps)+".png";
-            else imageName = "0"+QString::number(localNumberOfSteps)+".png";
-            if(!fileIsValid(imageName)) break;
-            QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\neato.exe";
-            QString filePath = itFiles->filePath(); //"labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
-            QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+imageName;
-            QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
-
-
-            if(WinExec(myPath.toStdString().c_str(), SW_HIDE) > 31)
-            {
-
-            }
-
-            localNumberOfSteps++;
-        }
-        ++i;
-    }
     ui->visualizePushButton->setEnabled(true);
 }
 
 void MainWindow::on_visualizePushButton_clicked()
 {
     illustrate();
+}
+
+void MainWindow::on_stopPushButton_clicked()
+{
+    changeAutomatically = false;
 }

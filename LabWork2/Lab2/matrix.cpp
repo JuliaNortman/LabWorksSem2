@@ -3,6 +3,7 @@
 
 Cell::Cell()
 {
+    //set cell styles
     setFixedSize(35, 28);
     setValidator(new QIntValidator(-1000, 1000));
     setStyleSheet("QLineEdit {  border: 2px solid gray;"
@@ -14,11 +15,13 @@ Matrix::Matrix(const int &dim, QWidget *parent) :
     ui(new Ui::Matrix),
     n(dim)
 {
+    //set window size and style
     ui->setupUi(this);
     setFixedSize(30 + 41*n + 30, 34*n + 100);
     ui->OKPushButton->move(30+41*n-80, 34*n+100-28);
     ui->error->move(30+20*n-48, 3);
 
+    //create the input fields
     cells.resize(n);
     for(int i = 0; i < n; ++i)
     {
@@ -33,6 +36,15 @@ Matrix::Matrix(const int &dim, QWidget *parent) :
 
 Matrix::~Matrix()
 {
+    //delete cells
+    for(int i = 0; i < n; ++i)
+    {
+        for(int j = 0; j < n; ++j)
+        {
+            delete cells[i][j];
+        }
+    }
+
     delete ui;
 }
 
@@ -51,7 +63,7 @@ void Matrix::on_OKPushButton_clicked()
             /*if cell is empty*/
             if(cells[i][j]->text() == "")
             {
-                warning();
+                warning(); //show warning
                 return;
             }
             matr[i].resize(n);

@@ -28,14 +28,17 @@ public:
 };
 
 
-
+/**
+ * @brief The Vertex class
+ * Used to represent the attributes of the vertex
+ */
 class Vertex
 {
 public:
     Vertex(int v, QString color, int label = 0);
     QString label; //additional mark on the vertex
     QString color; //color in which vertex will be printed
-    QString vertex;
+    QString vertex; //index of the vertex
 };
 
 class Edge
@@ -48,20 +51,47 @@ public:
     QString to; //end of the edge
 };
 
+
+/**
+ * @brief The WriteInFile class
+ * Interface class
+ * has the pure virtual function write in order to write information in file
+ */
 class WriteInFile
 {
 protected:
-    int numberOfSteps = 0;
+    int numberOfSteps = 0; //number of steps in the algorithm
 public:
     WriteInFile(const Graph& G);
     virtual ~WriteInFile() = default;
-    virtual void write(void*) = 0;
-    void createImage();
+    virtual void write(void*) = 0; //pure virtual function
+
+    /**
+     * @brief generates the file name from the integer
+     * that describes current number of steps
+     * @return File name
+     */
     const QString fileName();
+
+    /**
+     * @brief generates the file name from the integer
+     * that describes number of steps
+     * @return File name
+     */
     const QString prevFileName();
+
+    /**
+     * @brief writes total number of steps in file
+     * @param numb Total number of steps
+     */
     void writeNumberOfSteps(int numb);
 };
 
+
+/**
+ * @brief The WriteEdgeInFile class
+ * writes vertex with its attribtes in the file
+ */
 class WriteEdgeInFile :public WriteInFile
 {
 public:
@@ -69,6 +99,11 @@ public:
     void write(void*);
 };
 
+
+/**
+ * @brief The WriteVertexInFile class
+ * writes edge with its attribtes in the file
+ */
 class WriteVertexInFile :public WriteInFile
 {
 public:
