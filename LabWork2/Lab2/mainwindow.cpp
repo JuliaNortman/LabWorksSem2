@@ -65,6 +65,7 @@ void MainWindow::on_numberOfVertexes_currentIndexChanged(int index)
     ui->stopPushButton->hide();
     clearLabels();
     setPicture("");
+    ui->resultTextBrowser->setText("");
 }
 
 void MainWindow::printMatrix(QVector<QVector<int>> matrix)
@@ -205,15 +206,27 @@ void MainWindow::on_Run_clicked()
 {
     Graph g(graph, directed, weighted);
 
-    WriteVertexInFile f(g);
+    setPicture("");
+    ui->resultTextBrowser->setText("");
+
+    WriteEdgeInFile f(g);
     for(int i = 0; i < n; ++i)
     {
-        Vertex v(i+1, "red");
-        f.write(&v);
+        for(int j = 0; j < n; ++j)
+        {
+            if(graph[i][j] == 0) continue;
+
+            /*qDebug(std::to_string(i).c_str());
+            qDebug(std::to_string(j).c_str());*/
+
+            Edge v(i, j, "red");
+            f.write(&v);
+        }
     }
 
 
     algoExecute();
+    setOutput();
 }
 
 
@@ -383,4 +396,24 @@ void MainWindow::on_visualizePushButton_clicked()
 void MainWindow::on_stopPushButton_clicked()
 {
     changeAutomatically = false;
+    ui->stopPushButton->setEnabled(false);
+}
+
+void MainWindow::setOutput()
+{
+    QFile output("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
+
+    if(!output.open(QIODevice::ReadOnly)) //open file
+    {
+        qDebug("Not open");
+        return;
+    }
+
+
+    ui->resultTextBrowser->setText("");
+    while(!output.atEnd())
+    {
+        QString line = output.readLine();
+        ui->resultTextBrowser->append(line);
+    }
 }

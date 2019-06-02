@@ -5,15 +5,15 @@
 
 Vertex::Vertex(int vertex, QString color, int label)
 {
-    this->vertex = QString::number(vertex);
+    this->vertex = QString::number(vertex+1);
     this->color = color;
     this->label = QString::number(label);
 }
 
 Edge::Edge(int from, int to, QString color, int label)
 {
-    this->from = QString::number(from);
-    this->to = QString::number(to);
+    this->from = QString::number(from+1);
+    this->to = QString::number(to+1);
     this->color = color;
     this->label = QString::number(label);
 }

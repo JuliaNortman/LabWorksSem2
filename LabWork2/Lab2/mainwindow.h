@@ -167,6 +167,11 @@ private slots:
      * @brief stop showing images automatically
      */
     void on_stopPushButton_clicked();
+
+    /**
+     * @brief print the algo result on in the textArea
+     */
+    void setOutput();
 };
 
 #endif // MAINWINDOW_H
