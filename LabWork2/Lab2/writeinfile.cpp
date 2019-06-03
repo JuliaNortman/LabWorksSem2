@@ -19,6 +19,7 @@ Edge::Edge(int from, int to, QString color, int label)
 }
 
 WriteInFile::WriteInFile(const Graph& G)
+    :g(G)
 {
     //creating file
     QString path = "LabWorksSem2\\LabWork2\\Lab2\\Files\\00.dat";
@@ -116,7 +117,9 @@ void WriteEdgeInFile::write(void* e)
     {
         QString line = file.readLine(); //read line from the graphviz.dat
         QString edge = d->from+"->"+d->to;
-        if(!line.contains(edge))
+        QString reverseEdge = d->to+"->"+d->from;
+        if(!line.contains(edge)) //||
+               // (!g.oriented && !line.contains(reverseEdge) && !line.contains(edge)))
         {
             temp.write(line.toStdString().c_str());
         }

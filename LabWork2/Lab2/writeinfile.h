@@ -7,28 +7,6 @@
 #include <QVector>
 #include <QFile>
 
-//test, should be deleted
-/*class Graph
-{
-private:
-
-
-public:
-    QVector<QVector<int>> graph;
-    bool weighted = false;
-    bool oriented = false;
-
-    Graph() = default;
-    Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted)
-    {
-        this->graph = graph;
-        this->oriented = oriented;
-        this->weighted = weighted;
-    }
-
-    const int NO_EDGE = 0;
-};*/
-
 
 /**
  * @brief The Vertex class
@@ -63,6 +41,7 @@ class WriteInFile
 {
 protected:
     int numberOfSteps = 0; //number of steps in the algorithm
+    Graph g; //graph
 public:
     WriteInFile(const Graph& G);
     virtual ~WriteInFile() = default;

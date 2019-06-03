@@ -17,21 +17,6 @@ namespace Ui {
 class MainWindow;
 }
 
-/*should be deleted
-* used only for correct work of mainWindow
-*/
-/*class GraphAlgorithm
-{
-protected:
-    Graph graphInput;
-    int s = 0; //source
-    WriteInFile *writeFileHandler; //=NULL;
-    void setSourceVertex(int source);
-public:
-    GraphAlgorithm(Graph &graph) : graphInput(graph){}
-    virtual ~GraphAlgorithm() = default;
-    virtual void executeAlgorithm() = 0;
-};*/
 
 class MainWindow : public QMainWindow
 {
@@ -178,6 +163,11 @@ private slots:
      * to be empty
      */
     void clearOutput();
+
+    /**
+     * @brief change window size according to the number of vertexes
+     */
+    void setWindowSize();
 };
 
 #endif // MAINWINDOW_H

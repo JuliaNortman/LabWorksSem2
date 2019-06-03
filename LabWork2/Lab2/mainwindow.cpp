@@ -24,11 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     //hiding buttons
-    /*ui->prevPushButton->hide();
-    ui->nextPushButton->hide();
-    ui->Run->setEnabled(false);
-    ui->visualizePushButton->setEnabled(false);
-    ui->stopPushButton->hide();*/
     clearOutput();
 }
 
@@ -61,14 +56,6 @@ void MainWindow::on_numberOfVertexes_currentIndexChanged(int index)
 
     //hide buttons and clear previous output
     clearOutput();
-    /*ui->Run->setEnabled(false);
-    ui->visualizePushButton->setEnabled(false);
-    ui->prevPushButton->hide();
-    ui->nextPushButton->hide();
-    ui->stopPushButton->hide();
-    clearLabels();
-    setPicture("");
-    ui->resultTextBrowser->setText("");*/
 }
 
 void MainWindow::printMatrix(QVector<QVector<int>> matrix)
@@ -269,7 +256,16 @@ void MainWindow::on_nextPushButton_clicked()
 void MainWindow::on_algorithm_currentIndexChanged(int index)
 {
     algoNumber = index;
-    clearOutput();
+    //clear output but keep the matrix
+    ui->stopPushButton->hide();
+    ui->prevPushButton->hide();
+    ui->nextPushButton->hide();
+    setPicture("");
+    ui->resultTextBrowser->setText("");
+    ui->visualizePushButton->setEnabled(false);
+    QFile file("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
+    file.open(QIODevice::WriteOnly);
+    file.close();
 }
 
 void MainWindow::createImage()
@@ -292,11 +288,8 @@ void MainWindow::createImage()
             QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+imageName;
             QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
 
-
-            if(WinExec(myPath.toStdString().c_str(), SW_HIDE) > 31)
-            {
-
-            }
+            //lauch graphviz to generate a picture
+            WinExec(myPath.toStdString().c_str(), SW_HIDE);
 
             localNumberOfSteps++;
         }
@@ -307,6 +300,7 @@ void MainWindow::createImage()
 void MainWindow::algoExecute()
 {
     if(algo) delete algo;
+
     Graph G(graph, directed, weighted);
 
     //choose what algo to be executed
@@ -315,43 +309,36 @@ void MainWindow::algoExecute()
     case 0:
     {
         algo = new BFS(G);
-        qDebug("BFS");
         break;
     }
     case 1:
     {
         algo = new DFS(G);
-        qDebug("DFS");
         break;
     }
     case 2:
     {
         algo = new ConnectedComponents(G);
-        qDebug("ConnectedComponents ");
         break;
     }
     case 3:
     {
         algo = new ColorGraph(G);
-        qDebug("ColorGraph");
         break;
     }
     case 4:
     {
         algo = new DetectCycle(G);
-        qDebug("DetectCycle");
         break;
     }
     case 5:
     {
         algo = new ShortestPathes(G);
-        qDebug("ShortestPathes");
         break;
     }
     case 6:
     {
         algo = new MinimalSpanningTree(G);
-        qDebug("MinimalSpanningTree");
         break;
     }
     default:
@@ -366,16 +353,6 @@ void MainWindow::algoExecute()
     catch (const QString str)
     {
         //call message box to show the problem
-        QMessageBox::critical(nullptr, "Critical", str);
-    }
-    catch(std::bad_alloc &e)
-    {
-        QString str = e.what();
-        QMessageBox::critical(nullptr, "Critical", str);
-    }
-    catch(std::out_of_range &e)
-    {
-        QString str = e.what();
         QMessageBox::critical(nullptr, "Critical", str);
     }
     catch(...)
@@ -394,27 +371,8 @@ void MainWindow::algoExecute()
 
 void MainWindow::on_visualizePushButton_clicked()
 {
-    QFile file("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
-    file.open(QIODevice::ReadOnly);
-    QString result = "";
-
-    while(!file.atEnd())
-    {
-        result += file.readLine();
-    }
-
-    QString expect = "2--1 \n0--2 \n";
-
-
-    if(result == expect)
-    {
-        ui->resultTextBrowser->append("OK\n"+expect+"\n"+result);
-    }
-    else ui->resultTextBrowser->append("NOT OK\n"+expect+"\n"+result);
-
-
-    file.close();
-
+    setWindowSize();
+    ui->stopPushButton->setEnabled(true);
     illustrate();
 }
 
@@ -448,7 +406,7 @@ void MainWindow::clearOutput()
     ui->Run->setEnabled(false);
     ui->visualizePushButton->setEnabled(false);
     ui->prevPushButton->hide();
-    ui->prevPushButton->hide();
+    ui->nextPushButton->hide();
     ui->stopPushButton->hide();
     setPicture("");
     clearLabels();
@@ -457,4 +415,32 @@ void MainWindow::clearOutput()
     QFile file("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
     file.open(QIODevice::WriteOnly);
     file.close();
+}
+
+void MainWindow::setWindowSize()
+{
+    if(n > 5)
+    {
+        setFixedSize(950, 660);
+        ui->stopPushButton->move(100, 80+40+250+200);
+        ui->prevPushButton->move(180, 80+40+250+200);
+        ui->nextPushButton->move(260, 80+40+250+200);
+        ui->graphLabel->setFixedSize(490, 450);
+    }
+    else
+    {
+        setFixedSize(750, 530);
+        ui->stopPushButton->move(384, 80+40+350);
+        ui->prevPushButton->move(484, 80+40+350);
+        ui->nextPushButton->move(584, 80+40+350);
+        ui->graphLabel->setFixedSize(290, 250);
+    }
+    if(n == 2 && (graph[0][1] || graph[1][0]))
+    {
+        ui->graphLabel->setFixedSize(190, 235);
+    }
+    else if(n == 2)
+    {
+        ui->graphLabel->setFixedSize(235, 190);
+    }
 }

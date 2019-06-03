@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>747</width>
-    <height>529</height>
+    <width>750</width>
+    <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QLabel" name="graphLabel">
     <property name="geometry">
      <rect>
-      <x>490</x>
+      <x>449</x>
       <y>160</y>
-      <width>250</width>
+      <width>290</width>
       <height>250</height>
      </rect>
     </property>
@@ -55,52 +55,13 @@
      <string>Your matrix:</string>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>510</x>
-      <y>430</y>
-      <width>204</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QPushButton" name="prevPushButton">
-       <property name="text">
-        <string>Prev</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_7">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="nextPushButton">
-       <property name="text">
-        <string>Next</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QTextBrowser" name="resultTextBrowser">
     <property name="geometry">
      <rect>
       <x>480</x>
       <y>50</y>
       <width>250</width>
-      <height>81</height>
+      <height>80</height>
      </rect>
     </property>
    </widget>
@@ -117,7 +78,7 @@
      <string>Stop</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>33</x>
@@ -396,13 +357,39 @@
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="prevPushButton">
+    <property name="geometry">
+     <rect>
+      <x>511</x>
+      <y>431</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Prev</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="nextPushButton">
+    <property name="geometry">
+     <rect>
+      <x>638</x>
+      <y>431</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Next</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>747</width>
+     <width>750</width>
      <height>21</height>
     </rect>
    </property>
