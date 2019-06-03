@@ -9,7 +9,6 @@
 
 #include<iostream>
 
-
 void GraphAlgorithm::setSourceVertex(int source)
 {
     int sizeGraph = graphInput.graph.size();
@@ -24,13 +23,6 @@ void GraphAlgorithm::setSourceVertex(int source)
 
 void BFS::executeAlgorithm()
 {
-    if (!graphInput.isCorrectGraph())
-    {
-        const QString str = "INCORRECT GRAPH";
-        throw str;
-        //return;
-    }
-
     int source = s;
     int sizeGraph = graphInput.graph.size();
     QVector<bool> visited(sizeGraph, false);
@@ -38,34 +30,26 @@ void BFS::executeAlgorithm()
 
     const int color = 0;// color number less than COLORS_VECTOR_SIZE
     QQueue<int> queue;
-    //visited[source] = true;
-    //queue.push_back(source);
-    for (int i=0; i<sizeGraph;i++)
-    {
+    visited[source] = true;
+    queue.push_back(source);
 
-        if (!visited[i])
+    while(!queue.empty())
+    {
+        source = queue.front();
+        BFSTraverseResult.push_back(source);
+        writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
+        std::cout << source << " ";
+        queue.pop_front();
+        for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
         {
-            if (i == s){visited[s] = true;}
-           queue.push_back(i);
-        while(!queue.empty())
-        {
-            source = queue.front();
-            BFSTraverseResult.push_back(source);
-            writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
-            //std::cout << source << " ";
-            queue.pop_front();
-            for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+            if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
             {
-                if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
+                if (!visited[adj_v]) // if still not visited
                 {
-                    if (!visited[adj_v]) // if still not visited
-                    {
-                        visited[adj_v] = true;
-                        queue.push_back(adj_v);
-                    }
+                    visited[adj_v] = true;
+                    queue.push_back(adj_v);
                 }
             }
-        }
         }
     }
 
@@ -87,13 +71,6 @@ void BFS::executeAlgorithm()
 
 void DFS::executeAlgorithm()
 {
-    if (!graphInput.isCorrectGraph())
-    {
-        const QString str = "INCORRECT GRAPH";
-        throw str;
-        //return;
-    }
-
     int source = s;
     int sizeGraph = graphInput.graph.size();
     const int color = 0; //color number less than COLORS_VECTOR_SIZE
@@ -102,32 +79,26 @@ void DFS::executeAlgorithm()
     QVector<bool> visited(sizeGraph, false);
     QStack<int> stack;
 
-    for (int i = 0; i<sizeGraph; i++)
+    stack.push(source);
+    while(!stack.empty())
     {
-        if (!visited[i])
+        source = stack.top();
+        stack.pop();
+
+        if (!visited[source])
         {
-            stack.push(i);
-            while(!stack.empty())
+            writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
+            DFSTraverseResult.push_back(source);
+            visited[source] = true;
+        }
+
+        for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+        {
+            if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
             {
-                source = stack.top();
-                stack.pop();
-
-                if (!visited[source])
+                if (!visited[adj_v]) // if still not visited
                 {
-                    writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
-                    DFSTraverseResult.push_back(source);
-                    visited[source] = true;
-                }
-
-                for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
-                {
-                    if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
-                    {
-                        if (!visited[adj_v]) // if still not visited
-                        {
-                            stack.push(adj_v);
-                        }
-                    }
+                   stack.push(adj_v);
                 }
             }
         }
@@ -149,208 +120,55 @@ void DFS::executeAlgorithm()
 
 }
 
+QVector<int> ConnectedComponents::findIntersection(QVector<int> &v1, QVector<int> &v2)
+{
+        QVector<int> v_intersection;
+
+        std::sort(v1.begin(), v1.end());
+        std::sort(v2.begin(), v2.end());
+
+        std::set_intersection(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                  std::back_inserter(v_intersection));
+        return v_intersection;
+
+}
 
 void ConnectedComponents::executeAlgorithm()
 {
-    if (!graphInput.isCorrectGraph())
-    {
-        const QString str = "INCORRECT GRAPH";
-        throw str;
-        //return;
-    }
-
-    if(graphInput.oriented)
-    {
-        directedComponents();
-        return;
-    }
-
     int source = s; // get source vertex
     int sizeGraph = graphInput.graph.size(); //get size of graph
 
-    QVector<bool> visited(sizeGraph, false); //visited vertices
-    QStack<int> stack; //stack of current vertices to concern
-    QVector<int> used(sizeGraph, false); //set of used vetrices
-
-    QString connectedComponents; //contains sequences of vertics (components) devided by commas
-
-    bool notAllVertUsed = true;
-    stack.push(source);
-    int color = 0; //color number less than COLORS_VECTOR_SIZE
-    while(notAllVertUsed)
+    if (!graphInput.oriented)
     {
-        if (source!=s){connectedComponents += "| ";} //if not first component then add a devider
+        QVector<bool> visited(sizeGraph, false); //visited vertices
+        QStack<int> stack; //stack of current vertices to concern
+        QVector<int> used(sizeGraph, false); //set of used vetrices
 
-        while(!stack.empty())
+        QString connectedComponents; //contains sequences of vertics (components) devided by commas
+
+        bool notAllVertUsed = true;
+        stack.push(source);
+        int color = 0; //color number less than COLORS_VECTOR_SIZE
+        while(notAllVertUsed)
         {
-            source = stack.top();
-            stack.pop();
-            used[source] = true;
+            if (source!=s){connectedComponents += "| ";} //if not first component then add a devider
 
-            if (!visited[source])
-            {
-                writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color%COLORS_VECTOR_SIZE]));
-                connectedComponents += QString::number(source) + " ";
-                visited[source] = true;
-            }
-
-            for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
-            {
-                if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
-                {
-                    if (!visited[adj_v]) // if still not visited
-                    {
-                       stack.push(adj_v);
-                    }
-                }
-            }
-        }
-
-        color++; //change color
-
-        //find any still not used vertes (not from previous connectivity component)
-        int indNotUsedVert = 0;
-        for (; indNotUsedVert<sizeGraph; indNotUsedVert++)
-        {
-            if (!used[indNotUsedVert]) break;
-        }
-        if (indNotUsedVert==sizeGraph)
-        {
-            notAllVertUsed = false;
-            //return;
-        }
-        stack.push(indNotUsedVert);
-    }
-
-    //writing into the file
-    QFile file (pathToFileResult);
-    if(!file.open(QIODevice::WriteOnly)) //open file
-    {
-        return;
-    }
-    file.write(connectedComponents.toStdString().c_str());
-    file.close();
-}
-
-void ConnectedComponents::fillOrder(int v, bool visited[], QStack<int> &Stack)
-{
-    // Mark the current node as visited and print it
-        visited[v] = true;
-
-        // Recur for all the vertices adjacent to this vertex
-
-        for(int i = 0; i < graphInput.graph.size(); ++i)
-        {
-            if(graphInput.graph[v][i] != 0 && !visited[i])
-            {
-                fillOrder(i, visited, Stack);
-            }
-        }
-
-        // All vertices reachable from v are processed by now, push v
-        Stack.push_back(v);
-
-}
-
-void ConnectedComponents::directedComponents()
-{
-    bool* visited = new bool[graphInput.graph.size()];
-    for(int i = 0; i < graphInput.graph.size(); ++i) visited[i] = false;
-    QStack<int> s;
-
-    for(int i = 0; i < graphInput.graph.size(); ++i)
-    {
-        if(!visited[i]) fillOrder(i, visited, s);
-    }
-
-    graphInput.transponse(); //2
-
-    QStack<int> copy = s;
-    while(!copy.isEmpty())
-    {
-        int a = copy.top();
-        copy.pop();
-
-        qDebug(std::to_string(a).c_str());
-    }
-
-    for(int i = 0; i < graphInput.graph.size(); ++i) visited[i] = false;
-
-    QFile file(pathToFileResult);
-    file.open(QIODevice::WriteOnly);
-    file.close();
-    int color = 0;
-    while(!s.isEmpty())
-    {
-        int v = s.top();
-        s.pop();
-
-        if(!visited[v])
-        {
-            dfs(v, visited, graphInput.graph, color);
-        }
-        ++color;
-    }
-}
-
-void ConnectedComponents::dfs(int v, bool *visited, QVector<QVector<int>> graph, int color)
-{
-    // Mark the current node as visited and print it
-        visited[v] = true;
-        /*QString result;
-        for (int i=0; i<DFSTraverseResult.size(); i++)
-        {
-            result += QString::number(DFSTraverseResult[i]) + " ";
-        }*/
-        QFile file (pathToFileResult);
-        if(!file.open(QIODevice::Append)) //open file
-        {
-            return;
-        }
-        file.write((QString::number(v).toStdString()+" ").c_str());
-        file.close();
-
-        writeFileHandler->write(new Vertex(v, COLORS_VECTOR[color]));
-
-        // Recur for all the vertices adjacent to this vertex
-
-        for(int i = 0; i < graph.size(); ++i)
-        {
-            if(!graph[v][i] && !visited[i])
-            {
-                dfs(i, visited, graph, color);
-            }
-        }
-
-
-    //int source = v;
-    /*int sizeGraph = graph.size();
-
-
-    QVector<int> DFSTraverseResult; //contains vertex sequence
-    //QVector<bool> visited(sizeGraph, false);
-    QStack<int> stack;
-
-    //for (int i = 0; i<sizeGraph; i++)
-    {
-       // if (!visited[i])
-        {
-            stack.push(source);
             while(!stack.empty())
             {
                 source = stack.top();
                 stack.pop();
+                used[source] = true;
 
                 if (!visited[source])
                 {
-                    writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
-                    DFSTraverseResult.push_back(source);
+                    writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color%COLORS_VECTOR_SIZE]));
+                    connectedComponents += QString::number(source) + " ";
                     visited[source] = true;
                 }
 
                 for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
                 {
-                    if (graph[source][adj_v] != 0) //if an edge exists
+                    if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
                     {
                         if (!visited[adj_v]) // if still not visited
                         {
@@ -359,40 +177,73 @@ void ConnectedComponents::dfs(int v, bool *visited, QVector<QVector<int>> graph,
                     }
                 }
             }
-        }
-    }*/
 
-    //writing result into the file
-    /*QString result;
-    for (int i=0; i<DFSTraverseResult.size(); i++)
-    {
-        result += QString::number(DFSTraverseResult[i]) + " ";
+            color++; //change color
+
+            //find any still not used vertes (not from previous connectivity component)
+            int indNotUsedVert = 0;
+            for (; indNotUsedVert<sizeGraph; indNotUsedVert++)
+            {
+                if (!used[indNotUsedVert]) break;
+            }
+            if (indNotUsedVert==sizeGraph)
+            {
+                notAllVertUsed = false;
+                //return;
+            }
+            stack.push(indNotUsedVert);
+        }
+
+        //writing into the file
+        QFile file (pathToFileResult);
+        if(!file.open(QIODevice::WriteOnly)) //open file
+        {
+            return;
+        }
+        file.write(connectedComponents.toStdString().c_str());
+        file.close();
     }
-    QFile file (pathToFileResult);
-    if(!file.open(QIODevice::Append)) //open file
+    else //if oriented
     {
-        return;
+        QVector<int> dfsResult;
+        QVector<int> dfsReverseResult;
+        QVector<QVector<int>> stronglyConnectedComponents;
+        QVector<int> intersection;
+        QVector<int> used(sizeGraph, false);
+        for (int v = 0; v < sizeGraph; v++)
+        {
+            if (!used[v])
+            {
+                dfsResult = graphInput.DFSfrom(v);
+                graphInput.transponse();
+                dfsReverseResult = graphInput.DFSfrom(v);
+                graphInput.transponse(); // set matrix back to initial state
+                intersection = findIntersection(dfsResult, dfsReverseResult);
+                for (int i=0; i<intersection.size(); i++)
+                {
+                    used[i] = true;
+                }
+
+                stronglyConnectedComponents.push_back(intersection);
+            }
+        }
+
+        int color = 0;
+        for (int i=0; i<stronglyConnectedComponents.size(); i++)
+        {
+            for (int j=0; j<stronglyConnectedComponents[i].size(); j++)
+            {
+                writeFileHandler->write(new Vertex(stronglyConnectedComponents[i][j], COLORS_VECTOR[color%COLORS_VECTOR_SIZE]));
+            }
+            color++;
+        }
+
     }
-    file.write((result.toStdString()+"|").c_str());
-    file.close();*/
 }
+
 
 void ColorGraph::executeAlgorithm()
 {
-    if (!graphInput.isCorrectGraph())
-    {
-        const QString str = "INCORRECT GRAPH";
-        throw str;
-        //return;
-    }
-
-    if (graphInput.oriented)
-    {
-        const QString str = "NOT APPLIED FOR DIRECTED GRAPHS";
-        throw str;
-        //return;
-    }
-
     int sizeGraph = graphInput.graph.size(); //get size of graph
     QVector<int> resultVerticsColors(sizeGraph, -1);
     int source = 0;
@@ -444,13 +295,6 @@ void ColorGraph::executeAlgorithm()
 
 void DetectCycle::executeAlgorithm()
 {
-    if (!graphInput.isCorrectGraph())
-    {
-        const QString str = "INCORRECT GRAPH";
-        throw str;
-        //return;
-    }
-
     int source = s; // get source vertex
     int sizeGraph = graphInput.graph.size(); //get size of graph
 
@@ -544,12 +388,6 @@ void DetectCycle::executeAlgorithm()
 
 void ShortestPathes::executeAlgorithm()
 {
-    if (!graphInput.isCorrectGraph())
-    {
-        QString str = "INCORRECT GRAPH";
-        throw str;
-    }
-
     int sizeGraph = graphInput.graph.size();
     QVector<int> shortestDistancesFromS(sizeGraph, graphInput.INF);
     shortestDistancesFromS[s] = 0;
@@ -587,8 +425,7 @@ void ShortestPathes::executeAlgorithm()
     }
     else
     {
-        QString str = "NOT APPLIED TO SUCH A GRAPH";
-        throw str;
+        throw "NOT APPLIED TO SUCH A GRAPH";
     }
 
     //preparing and writing result file
@@ -618,11 +455,6 @@ void MinimalSpanningTree::executeAlgorithm()
         const QString str = "NOT APPLIED TO SUCH A GRAPH";
         throw str;
         //return;
-    }
-    else if (!graphInput.isCorrectGraph())
-    {
-        const QString str = "INCORRECT GRAPH";
-        throw str;
     }
     //else
 
@@ -674,7 +506,8 @@ void MinimalSpanningTree::executeAlgorithm()
     std::multimap<int, std::pair<int,int>>::iterator it = minTree.begin();
     for (;it!=minTree.end(); it++)
     {
-        writeFileHandler->write(new Edge(it->second.second, it->second.first, COLORS_VECTOR[color], it->first));
+        writeFileHandler->write(new Edge(it->second.first, it->second.second, COLORS_VECTOR[color], it->first));
+        //writeFileHandler->write(new Edge(it->second.first, it->second.second, COLORS_VECTOR[color], it->first));
         file.write((QString::number(it->second.first) + "--" + QString::number(it->second.second) + " \n").toStdString().c_str());
     }
 

@@ -4,6 +4,8 @@
 #include<QVector>
 #include<QString>
 #include<QFile>
+#include <algorithm>
+#include <iterator>
 //#include <gtest/gtest.h>
 #include "graph.h"
 #include "writeinfile.h"
@@ -107,10 +109,9 @@ public:
     }
     void executeAlgorithm();
 
-    void fillOrder(int v, bool visited[], QStack<int> &Stack);
-    void directedComponents();
-    void dfs(int v, bool visited[], QVector<QVector<int>> graph, int color);
-    //getTranspose();
+    QVector<int> findIntersection(QVector<int> &v1, QVector<int> &v2);
+
+
 private:
    // FRIEND_TEST(GraphAlgorithm, ConnectedComponentsTest);
 };
