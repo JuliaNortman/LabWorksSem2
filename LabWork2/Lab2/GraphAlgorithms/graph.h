@@ -15,13 +15,12 @@
 class Graph
 {
 private:
-    bool isCorrectGraph() const;  ///< Checks matrix graph to be square and symmetric in case of undirectedness, checks for loops.
+
     bool hasLoops() const;        ///< Checks if square matrix has any loop.
     bool hasSymmectricMatrix() const;     ///< Checking square matrix to be symmetric.
     bool hasSquareMatrix() const;         ///< Checks for squareness.
     void deleteLoops();                   ///< Sets main diagonal elements equal to NO_EDGE value.
     void correctGraph();                  ///< Makes graph matrix square and symmetric (if not oriented), delete loops.
-    void transponse();                    ///< Transpose square matrix.
 
 public:
     QVector<QVector<int>> graph;          ///< Graphs adjacency matrix.
@@ -38,7 +37,9 @@ public:
     QVector<int> BFSfrom(int source=0) const; ///< Returns BFS traverse vector.
     QVector<int> DFSfrom(int source=0) const; ///< Returns DFS traverse vector.
     bool isConnected();                       ///< Checks graph to be connected (with BFS) or strongly connected (for oriented use DFS).
+     bool isCorrectGraph() const;  ///< Checks matrix graph to be square and symmetric in case of undirectedness, checks for loops.
     //bool hasNegativeWeightCycleDirectedGraph();
+     void transponse();                    ///< Transpose square matrix.
 
 /*
 private:

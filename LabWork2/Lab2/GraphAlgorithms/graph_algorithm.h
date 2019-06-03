@@ -4,8 +4,10 @@
 #include<QVector>
 #include<QString>
 #include<QFile>
+//#include <gtest/gtest.h>
 #include "graph.h"
 #include "writeinfile.h"
+
 
 const int COLORS_VECTOR_SIZE = 20; ///< Precise value of defined colors in COLORS_VECTOR, its size.
 /**
@@ -56,6 +58,8 @@ public:
         setSourceVertex(source);
     }
     void executeAlgorithm();
+private:
+    //FRIEND_TEST(GraphAlgorithm, BFSTest);
 };
 
 /**
@@ -76,6 +80,8 @@ public:
         setSourceVertex(source);
     }
     void executeAlgorithm();
+private:
+    //FRIEND_TEST(GraphAlgorithm, DFSTest);
 };
 
 
@@ -100,6 +106,13 @@ public:
         setSourceVertex(source);
     }
     void executeAlgorithm();
+
+    void fillOrder(int v, bool visited[], QStack<int> &Stack);
+    void directedComponents();
+    void dfs(int v, bool visited[], QVector<QVector<int>> graph, int color);
+    //getTranspose();
+private:
+   // FRIEND_TEST(GraphAlgorithm, ConnectedComponentsTest);
 };
 
 /**
@@ -116,6 +129,8 @@ public:
         setSourceVertex(0);
     }
     void executeAlgorithm();
+private:
+    //FRIEND_TEST(GraphAlgorithm, ColorGraphTest);
 };
 
 /**
@@ -133,6 +148,8 @@ public:
         setSourceVertex(0);
     }
     void executeAlgorithm();
+private:
+    //FRIEND_TEST(GraphAlgorithm, DetectCycleTest);
 };
 
 
@@ -155,6 +172,8 @@ public:
         setSourceVertex(source);
     }
     void executeAlgorithm();
+private:
+    //FRIEND_TEST(GraphAlgorithm, ShortestPathesTest);
 };
 
 /**
@@ -178,6 +197,8 @@ public:
         setSourceVertex(source);
     }
     void executeAlgorithm();
+private:
+    //FRIEND_TEST(GraphAlgorithm, MinimalSpanningTreeTest);
 };
 
 #endif // GRAPH_ALGORITHM_H

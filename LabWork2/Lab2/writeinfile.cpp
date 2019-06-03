@@ -118,12 +118,7 @@ void WriteEdgeInFile::write(void* e)
         QString line = file.readLine(); //read line from the graphviz.dat
         QString edge = d->from+"->"+d->to;
         QString reverseEdge = d->to+"->"+d->from;
-        if(!line.contains(edge)) //||
-               // (!g.oriented && !line.contains(reverseEdge) && !line.contains(edge)))
-        {
-            temp.write(line.toStdString().c_str());
-        }
-        else
+        if(line.contains(edge) || (!g.oriented && line.contains(reverseEdge)))
         {
             QStringList list = line.split("]");
             if(list.size() == 1) //there is no symbol ']' in the line
@@ -135,6 +130,11 @@ void WriteEdgeInFile::write(void* e)
                 temp.write((list[0]+",color=\""+d->color+"\"];\n").toStdString().c_str());
             }
         }
+        else
+        {
+            temp.write(line.toStdString().c_str());
+        }
+
     }
     file.close();
     temp.close();
