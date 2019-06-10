@@ -66,6 +66,8 @@ public:
      * @param numb Total number of steps
      */
     void writeNumberOfSteps(int numb);
+
+    void CreatePicture(const QString& path);
 };
 
 

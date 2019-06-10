@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    qDebug(QDir::currentPath().toStdString().c_str());
+
     //initialize labels with empty strings
     for(int i = 0; i < MAXSIZE; ++i)
     {
@@ -23,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     }
 
+
+    graphLabel = new QLabel;
+    ui->scrollGraph->setWidget(graphLabel);
     //hiding buttons
     clearOutput();
 }
@@ -77,8 +82,8 @@ void MainWindow::printMatrix(QVector<QVector<int>> matrix)
 void MainWindow::setPicture(QString path)
 {
     QPixmap image(path);
-    ui->graphLabel->setPixmap(image);
-    ui->graphLabel->setScaledContents(true);
+    graphLabel->setPixmap(image);
+    //graphLabel->setScaledContents(true);
 }
 
 void MainWindow::clearLabels()
@@ -206,6 +211,14 @@ void MainWindow::on_Run_clicked()
     ui->resultTextBrowser->setText("");
 
     algoExecute();
+
+    ui->visualizePushButton->setEnabled(false);
+    QTime time;
+    time.start();
+    for(;time.elapsed() < 2000;) {
+        QApplication::processEvents(nullptr);
+    }
+    ui->visualizePushButton->setEnabled(true);
     setOutput();
 }
 
@@ -247,7 +260,6 @@ void MainWindow::on_nextPushButton_clicked()
     {
         QString filePath = it->next();
         QString filePath1 = it->fileName();
-        qDebug(filePath1.toStdString().c_str());
         if(!fileIsValid(it->fileName())) return;
         setPicture(filePath);
     }
@@ -274,7 +286,7 @@ void MainWindow::createImage()
 
     int i = 0;
     int localNumberOfSteps = 1;
-    while (itFiles->hasNext())
+    /*while (itFiles->hasNext())
     {
         QString str = itFiles->next();
         if(i > 1)
@@ -289,12 +301,22 @@ void MainWindow::createImage()
             QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
 
             //lauch graphviz to generate a picture
-            WinExec(myPath.toStdString().c_str(), SW_HIDE);
+            WinExec(myPath.toStdString().c_str(), SW_HIDE);*/
+            /*STARTUPINFOA st = {sizeof(STARTUPINFOA)};*/
 
-            localNumberOfSteps++;
+           /* st.dwFlags = STARTF_USESIZE | STARTF_USEPOSITION | STARTF_USESTDHANDLES;*/
+                /*st.dwXSize = 100;
+            //	st.dwYSize = 50;
+            //	st.dwX = 250;
+            //	st.dwY = 250;*/
+            //
+            /*PROCESS_INFORMATION pi = {0};
+            CreateProcessA(myPath.toStdString().c_str(), nullptr, nullptr, nullptr, TRUE, NULL, nullptr, nullptr, &st, &pi);
+*/
+            /*localNumberOfSteps++;
         }
         ++i;
-    }
+    }*/
 }
 
 void MainWindow::algoExecute()
@@ -419,13 +441,13 @@ void MainWindow::clearOutput()
 
 void MainWindow::setWindowSize()
 {
-    if(n > 5)
+    /*if(n > 5)
     {
         setFixedSize(950, 660);
         ui->stopPushButton->move(100, 80+40+250+200);
         ui->prevPushButton->move(180, 80+40+250+200);
         ui->nextPushButton->move(260, 80+40+250+200);
-        ui->graphLabel->setFixedSize(490, 450);
+        //ui->graphLabel->setFixedSize(490, 450);
     }
     else
     {
@@ -433,14 +455,14 @@ void MainWindow::setWindowSize()
         ui->stopPushButton->move(384, 80+40+350);
         ui->prevPushButton->move(484, 80+40+350);
         ui->nextPushButton->move(584, 80+40+350);
-        ui->graphLabel->setFixedSize(290, 250);
+        ui->scrollGraph->setFixedSize(290, 250);
     }
     if(n == 2 && (graph[0][1] || graph[1][0]))
     {
-        ui->graphLabel->setFixedSize(190, 235);
+        ui->scrollGraph->setFixedSize(190, 235);
     }
     else if(n == 2)
     {
-        ui->graphLabel->setFixedSize(235, 190);
-    }
+        ui->scrollGraph->setFixedSize(235, 190);
+    }*/
 }

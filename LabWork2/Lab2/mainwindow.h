@@ -28,7 +28,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    const int MAXSIZE = 10; //maximum number of vertexes that is allowed
+    const int MAXSIZE = 20; //maximum number of vertexes that is allowed
 
     int n = 2; //number for vertexes
     bool weighted = false; //whether graph is weighted or not
@@ -40,7 +40,7 @@ private:
     GraphAlgorithm* algo = nullptr; //pointer on the algorithm
     int algoNumber = 0; //index of the chosen algorithm from the combo box
     int numberOfSteps = -1; //number of images to illustrate certain algo work
-
+    QLabel* graphLabel = nullptr; //label for show image
 
 private slots:
     /**

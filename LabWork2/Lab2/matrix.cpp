@@ -8,6 +8,7 @@ Cell::Cell()
     setValidator(new QIntValidator(-1000, 1000));
     setStyleSheet("QLineEdit {  border: 2px solid gray;"
                                                 "border-radius: 5px;}");
+    setText("0");
 }
 
 Matrix::Matrix(const int &dim, QWidget *parent) :

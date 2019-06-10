@@ -7,7 +7,9 @@ Vertex::Vertex(int vertex, QString color, int label)
 {
     this->vertex = QString::number(vertex);
     this->color = color;
-    this->label = QString::number(label);
+    //this->label = QString::number(label);
+    if(label == 0) this->label = "";
+    else this->label = this->vertex + "\n(" +QString::number(label)+")";
 }
 
 Edge::Edge(int from, int to, QString color, int label)
@@ -75,6 +77,7 @@ WriteInFile::WriteInFile(const Graph& G)
 
     file.write("}");
     file.close();
+    CreatePicture(path);
     numberOfSteps++;
     writeNumberOfSteps(numberOfSteps);
 }
@@ -138,6 +141,7 @@ void WriteEdgeInFile::write(void* e)
     }
     file.close();
     temp.close();
+    CreatePicture(path2);
     numberOfSteps++;
     writeNumberOfSteps(numberOfSteps);
 }
@@ -169,11 +173,19 @@ void WriteVertexInFile::write(void* v)
         }
         else
         {
-            temp.write((d->vertex+"[color=\""+d->color+"\"];\n").toStdString().c_str());
+            if(d->label == "")
+            {
+                temp.write((d->vertex+"[color=\""+d->color+"\"];\n").toStdString().c_str());
+            }
+            else
+            {
+                temp.write((d->vertex+"[color=\""+d->color+"\",label=\""+d->label+"\"];\n").toStdString().c_str());
+            }
         }
     }
     file.close();
     temp.close();
+    CreatePicture(path2);
     numberOfSteps++;
     writeNumberOfSteps(numberOfSteps);
 }
@@ -190,4 +202,18 @@ void WriteInFile::writeNumberOfSteps(int numb)
     }
     numbofsteps.write(std::to_string(numb).c_str());
     numbofsteps.close();
+}
+
+void WriteInFile::CreatePicture(const QString &path)
+{
+    QString imageName = "";
+    if(numberOfSteps+1 > 9) imageName = QString::number(numberOfSteps+1)+".png";
+    else imageName = "0"+QString::number(numberOfSteps+1)+".png";
+    QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
+    QString filePath = path;
+    QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+imageName;
+    QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
+
+    //lauch graphviz to generate a picture
+    WinExec(myPath.toStdString().c_str(), SW_HIDE);
 }
