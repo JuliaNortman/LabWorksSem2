@@ -31,6 +31,7 @@ SOURCES += \
     writeinfile.cpp \
     GraphAlgorithms/graph.cpp \
     GraphAlgorithms/graph_algorithm.cpp \
+    graphoutput.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,11 +39,13 @@ HEADERS += \
     writeinfile.h \
     GraphAlgorithms/graph.h \
     GraphAlgorithms/graph_algorithm.h \
-    constants.h
+    constants.h \
+    graphoutput.h
 
 FORMS += \
         mainwindow.ui \
-    matrix.ui
+    matrix.ui \
+    graphoutput.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

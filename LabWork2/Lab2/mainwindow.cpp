@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    qDebug(QCoreApplication::applicationDirPath().toStdString().c_str());
+    //qDebug(QCoreApplication::applicationDirPath().toStdString().c_str());
 
     //initialize labels with empty strings
     for(int i = 0; i < MAXSIZE; ++i)
@@ -25,9 +25,11 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     }
 
+    //unused - ????
+    //graphLabel = new QLabel;
+    //ui->scrollGraph->setWidget(graphLabel);
 
-    graphLabel = new QLabel;
-    ui->scrollGraph->setWidget(graphLabel);
+
     //hiding buttons
     clearOutput();
 }
@@ -79,12 +81,6 @@ void MainWindow::printMatrix(QVector<QVector<int>> matrix)
     }
 }
 
-void MainWindow::setPicture(QString path)
-{
-    QPixmap image(path);
-    graphLabel->setPixmap(image);
-    //graphLabel->setScaledContents(true);
-}
 
 void MainWindow::clearLabels()
 {
@@ -149,66 +145,14 @@ void MainWindow::on_weightedGraph_stateChanged(int arg1)
     else weighted = false;
 }
 
-void MainWindow::illustrate()
-{
-    if(it) delete it; //delete previuos iterator
-    it = new QDirIterator(imgFolder, QDirIterator::NoIteratorFlags);//set iterator
-    changeAutomatically = true; //in order to cahnge pictures on timer
-    int i = 0;
-    while (it->hasNext() && changeAutomatically)
-    {
-        QString str = it->next();
-        if(i > 1)
-        {
-            ui->stopPushButton->show();
-            ui->prevPushButton->show();
-            ui->nextPushButton->show();
 
-            if(!fileIsValid(it->fileName())) break;
-            setPicture(str);
-            QTime time;
-            time.start();
-            for(;time.elapsed() < 800;) {
-                QApplication::processEvents(nullptr);
-            }
-        }
-        ++i;
-    }
-}
-
-bool MainWindow::fileIsValid(QString fileName)
-{
-    bool converted = false;
-    /*
-      * Get the file name without its expansion
-      * Convert the file name into the step
-      * Check if the step is less or equal then the maximum number of steps
-      * in the algorithm
-    */
-    int name = fileName.split(".")[0].toInt(&converted);
-    if(!converted) return false;
-    if(name <= numberOfSteps) return true;
-    return false;
-}
-
-void MainWindow::getNumberOfSteps()
-{
-    QFile numbofsteps(numberOfStepsFile);
-    if(!numbofsteps.open(QIODevice::ReadOnly)) //open file
-    {
-        qDebug("Not open");
-        return;
-    }
-    numberOfSteps = numbofsteps.readLine().toInt();//read number of steps from the file
-    numbofsteps.close();
-}
 
 void MainWindow::on_Run_clicked()
 {
     Graph g(graph, directed, weighted);
 
-    setPicture("");
-    ui->resultTextBrowser->setText("");
+    //setPicture("");
+    //ui->resultTextBrowser->setText("");
 
     algoExecute();
 
@@ -219,104 +163,7 @@ void MainWindow::on_Run_clicked()
         QApplication::processEvents(nullptr);
     }
     ui->visualizePushButton->setEnabled(true);
-    setOutput();
-}
-
-
-void MainWindow::on_prevPushButton_clicked()
-{
-    changeAutomatically = false;
-    ui->stopPushButton->setEnabled(false);
-
-    //find the previous step
-    int fileNumber = it->fileName().split(".")[0].toInt() - 1;
-    if(fileNumber > numberOfSteps) fileNumber = numberOfSteps-1;
-    QString filePath = "";
-    if(fileNumber > 9) filePath = QString::number(fileNumber)+".png";
-    else filePath = "0" + QString::number(fileNumber)+".png";
-    QString path = imgFolder+filePath;
-    if(fileNumber > 0)
-    {
-        setPicture(path);
-    }
-    else return;
-    if(it) delete it;
-
-    //set the current iterator to be the previous step
-    it = new QDirIterator(imgFolder, QDirIterator::NoIteratorFlags);
-    while(path != it->filePath() && it->hasNext())
-    {
-        it->next();
-    }
-}
-
-void MainWindow::on_nextPushButton_clicked()
-{
-    //check if the file is valid then show it
-    changeAutomatically = false;
-    ui->stopPushButton->setEnabled(false);
-
-    if(it->hasNext())
-    {
-        QString filePath = it->next();
-        QString filePath1 = it->fileName();
-        if(!fileIsValid(it->fileName())) return;
-        setPicture(filePath);
-    }
-}
-
-void MainWindow::on_algorithm_currentIndexChanged(int index)
-{
-    algoNumber = index;
-    //clear output but keep the matrix
-    ui->stopPushButton->hide();
-    ui->prevPushButton->hide();
-    ui->nextPushButton->hide();
-    setPicture("");
-    ui->resultTextBrowser->setText("");
-    ui->visualizePushButton->setEnabled(false);
-    QFile file(outputFile);
-    file.open(QIODevice::WriteOnly);
-    file.close();
-}
-
-void MainWindow::createImage()
-{
-    QDirIterator *itFiles = new QDirIterator(fileFolder, QDirIterator::NoIteratorFlags);
-
-    int i = 0;
-    int localNumberOfSteps = 1;
-    /*while (itFiles->hasNext())
-    {
-        QString str = itFiles->next();
-        if(i > 1)
-        {
-            QString imageName = "";
-            if(localNumberOfSteps > 9) imageName = QString::number(localNumberOfSteps)+".png";
-            else imageName = "0"+QString::number(localNumberOfSteps)+".png";
-            if(!fileIsValid(imageName)) break;
-            QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
-            QString filePath = itFiles->filePath(); //"labworkssem2\\labwork2\\lab2\\files\\graphviz.dat";
-            QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+imageName;
-            QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
-
-            //lauch graphviz to generate a picture
-            WinExec(myPath.toStdString().c_str(), SW_HIDE);*/
-            /*STARTUPINFOA st = {sizeof(STARTUPINFOA)};*/
-
-           /* st.dwFlags = STARTF_USESIZE | STARTF_USEPOSITION | STARTF_USESTDHANDLES;*/
-                /*st.dwXSize = 100;
-            //	st.dwYSize = 50;
-            //	st.dwX = 250;
-            //	st.dwY = 250;*/
-            //
-            /*PROCESS_INFORMATION pi = {0};
-            CreateProcessA(myPath.toStdString().c_str(), nullptr, nullptr, nullptr, TRUE, NULL, nullptr, nullptr, &st, &pi);
-*/
-            /*localNumberOfSteps++;
-        }
-        ++i;
-    }*/
+    //setOutput();
 }
 
 void MainWindow::algoExecute()
@@ -384,9 +231,7 @@ void MainWindow::algoExecute()
     }
 
 
-    getNumberOfSteps();
-
-    createImage();
+    //getNumberOfSteps(); ///////unused
 
     ui->visualizePushButton->setEnabled(true);
 }
@@ -394,45 +239,24 @@ void MainWindow::algoExecute()
 void MainWindow::on_visualizePushButton_clicked()
 {
     setWindowSize();
-    ui->stopPushButton->setEnabled(true);
-    illustrate();
+    //ui->stopPushButton->setEnabled(true);
+    //illustrate();
+    GraphOutput gOutput;
+    gOutput.exec();
 }
 
-void MainWindow::on_stopPushButton_clicked()
-{
-    changeAutomatically = false;
-    ui->stopPushButton->setEnabled(false);
-}
 
-void MainWindow::setOutput()
-{
-    QFile output(outputFile);
-
-    if(!output.open(QIODevice::ReadOnly)) //open file
-    {
-        qDebug("Not open");
-        return;
-    }
-
-
-    ui->resultTextBrowser->setText("");
-    while(!output.atEnd())
-    {
-        QString line = output.readLine();
-        ui->resultTextBrowser->append(line);
-    }
-}
 
 void MainWindow::clearOutput()
 {
     ui->Run->setEnabled(false);
     ui->visualizePushButton->setEnabled(false);
-    ui->prevPushButton->hide();
-    ui->nextPushButton->hide();
-    ui->stopPushButton->hide();
-    setPicture("");
+    //ui->prevPushButton->hide();
+   // ui->nextPushButton->hide();
+    //ui->stopPushButton->hide();
+    //setPicture("");
     clearLabels();
-    ui->resultTextBrowser->setText("");
+   // ui->resultTextBrowser->setText("");
 
     QFile file(outputFile);
     file.open(QIODevice::WriteOnly);
@@ -465,4 +289,14 @@ void MainWindow::setWindowSize()
     {
         ui->scrollGraph->setFixedSize(235, 190);
     }*/
+}
+
+void MainWindow::on_algorithm_currentIndexChanged(int index)
+{
+    algoNumber = index;
+
+    ui->visualizePushButton->setEnabled(false);
+    QFile file("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
+    file.open(QIODevice::WriteOnly);
+    file.close();
 }

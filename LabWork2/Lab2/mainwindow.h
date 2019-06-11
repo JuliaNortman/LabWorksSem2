@@ -5,6 +5,7 @@
 #include "writeinfile.h"
 #include "constants.h"
 #include "GraphAlgorithms/graph_algorithm.h"
+#include "graphoutput.h"
 
 #include <QMainWindow>
 #include <QRandomGenerator>
@@ -36,12 +37,21 @@ private:
     bool directed = false; //whether graph is directed or not
     QVector<QVector<int>> graph; //matrix n*n that represent graph
     QVector<QVector<QLabel*>> labels; //labels of the printed matrix
+
+    ////unused -- ????
     bool changeAutomatically = true; //true if images are changing on timer
     QDirIterator* it = nullptr; //pointer for iteration through Image directive
+
+
     GraphAlgorithm* algo = nullptr; //pointer on the algorithm
     int algoNumber = 0; //index of the chosen algorithm from the combo box
+
+
+    /////unused --- ?????
     int numberOfSteps = -1; //number of images to illustrate certain algo work
-    QLabel* graphLabel = nullptr; //label for show image
+
+
+    QLabel* graphLabel = nullptr; //label for show image ////unused-???
 
 
     const QString numberOfStepsFile = QCoreApplication::applicationDirPath()+"//Files//NumberOfSteps.txt";
@@ -64,13 +74,13 @@ private slots:
     /**
      * @brief output of image sequence on the screen
      */
-    void illustrate();
+    //void illustrate();
 
     /**
      * @brief set given picture on the graphLabel
      * @param path Path of the picture
      */
-    void setPicture(QString path);
+   // void setPicture(QString path);
 
     /**
      * @brief generate the random matrix
@@ -110,13 +120,13 @@ private slots:
      * @brief show the previous state of the algorithm
      * or do nothing if current state is initial
      */
-    void on_prevPushButton_clicked();
+    //void on_prevPushButton_clicked();
 
     /**
      * @brief show the next state of the algorithm
      * or do nothing if current state is final
      */
-    void on_nextPushButton_clicked();
+    //void on_nextPushButton_clicked();
 
     /**
      * @brief choose algorithm from the comobox
@@ -143,27 +153,27 @@ private slots:
      * @return true if file has to be used
      * false otherwise
      */
-    bool fileIsValid(QString fileName);
+    //bool fileIsValid(QString fileName);
 
     /**
      * @brief read the number of steps of the current algorithm from file
      */
-    void getNumberOfSteps();
+    //void getNumberOfSteps();
 
     /**
      * @brief generate image from file using graphviz
      */
-    void createImage();
+    //void createImage();
 
     /**
      * @brief stop showing images automatically
      */
-    void on_stopPushButton_clicked();
+    //void on_stopPushButton_clicked();
 
     /**
      * @brief print the algo result on in the textArea
      */
-    void setOutput();
+    //void setOutput();
 
     /**
      * @brief set the graphLabel, resultOutput and matrix

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>950</width>
+    <width>487</width>
     <height>650</height>
    </rect>
   </property>
@@ -40,32 +40,6 @@
     </property>
     <property name="text">
      <string>Your matrix:</string>
-    </property>
-   </widget>
-   <widget class="QTextBrowser" name="resultTextBrowser">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>50</y>
-      <width>250</width>
-      <height>80</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="stopPushButton">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>540</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="text">
-     <string>Stop</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
@@ -359,84 +333,13 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="prevPushButton">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>540</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="text">
-     <string>Prev</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="nextPushButton">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>540</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="text">
-     <string>Next</string>
-    </property>
-   </widget>
-   <widget class="QScrollArea" name="scrollGraph">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>150</y>
-      <width>491</width>
-      <height>361</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
-    </property>
-    <property name="widgetResizable">
-     <bool>true</bool>
-    </property>
-    <widget class="QWidget" name="scrollAreaWidgetContents">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>491</width>
-       <height>361</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="wait">
-      <property name="geometry">
-       <rect>
-        <x>-10</x>
-        <y>90</y>
-        <width>81</width>
-        <height>81</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </widget>
-   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>950</width>
+     <width>487</width>
      <height>21</height>
     </rect>
    </property>
