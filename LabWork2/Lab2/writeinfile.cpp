@@ -24,7 +24,7 @@ WriteInFile::WriteInFile(const Graph& G)
     :g(G)
 {
     //creating file
-    QString path = "LabWorksSem2\\LabWork2\\Lab2\\Files\\00.dat";
+    QString path = fileFolder+"//00.dat";
     QFile file(path);
     file.remove(); //removes file if it existed before
     if(!file.open(QIODevice::ReadWrite)) //open file
@@ -102,8 +102,8 @@ const QString WriteInFile::prevFileName()
 void WriteEdgeInFile::write(void* e)
 {
     Edge* d = static_cast<Edge*>(e);
-    QString path = "LabWorksSem2//LabWork2//Lab2//Files//"+prevFileName();
-    QString path2  = "LabWorksSem2//LabWork2//Lab2//Files//"+fileName();
+    QString path = fileFolder+prevFileName();
+    QString path2  = fileFolder+fileName();
     QFile file(path);
     QFile temp(path2);
     if(!file.open(QIODevice::ReadOnly)) //open file
@@ -149,8 +149,8 @@ void WriteEdgeInFile::write(void* e)
 void WriteVertexInFile::write(void* v)
 {
     Vertex* d = static_cast<Vertex*>(v);
-    QString path = "LabWorksSem2//LabWork2//Lab2//Files//"+prevFileName();
-    QString path2  = "LabWorksSem2//LabWork2//Lab2//Files//"+fileName();
+    QString path = fileFolder+prevFileName();
+    QString path2  = fileFolder+fileName();
     QFile file(path);
     QFile temp(path2);
     if(!file.open(QIODevice::ReadOnly)) //open file
@@ -194,7 +194,7 @@ void WriteVertexInFile::write(void* v)
 
 void WriteInFile::writeNumberOfSteps(int numb)
 {
-    QFile numbofsteps("LabWorksSem2//LabWork2//Lab2//Files//NumberOfSteps.txt");
+    QFile numbofsteps(numberOfStepsFile);
     if(!numbofsteps.open(QIODevice::WriteOnly)) //open file
     {
         qDebug("Not open");
@@ -209,9 +209,9 @@ void WriteInFile::CreatePicture(const QString &path)
     QString imageName = "";
     if(numberOfSteps+1 > 9) imageName = QString::number(numberOfSteps+1)+".png";
     else imageName = "0"+QString::number(numberOfSteps+1)+".png";
-    QString graphvizPath = "labworkssem2\\labwork2\\lab2\\graphviz\\release\\bin\\dot.exe";
+    QString graphvizPath = QCoreApplication::applicationDirPath()+"//Graphviz//release//bin//dot.exe";
     QString filePath = path;
-    QString imagePath = "labworkssem2\\labwork2\\lab2\\Images\\"+imageName;
+    QString imagePath = imgFolder+imageName;
     QString myPath = graphvizPath+" -Tpng "+filePath+ " -o " + imagePath;
 
     //lauch graphviz to generate a picture

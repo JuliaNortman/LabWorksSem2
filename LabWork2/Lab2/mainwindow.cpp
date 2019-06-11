@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    qDebug(QDir::currentPath().toStdString().c_str());
+    qDebug(QCoreApplication::applicationDirPath().toStdString().c_str());
 
     //initialize labels with empty strings
     for(int i = 0; i < MAXSIZE; ++i)
@@ -152,7 +152,7 @@ void MainWindow::on_weightedGraph_stateChanged(int arg1)
 void MainWindow::illustrate()
 {
     if(it) delete it; //delete previuos iterator
-    it = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images", QDirIterator::NoIteratorFlags);//set iterator
+    it = new QDirIterator(imgFolder, QDirIterator::NoIteratorFlags);//set iterator
     changeAutomatically = true; //in order to cahnge pictures on timer
     int i = 0;
     while (it->hasNext() && changeAutomatically)
@@ -193,7 +193,7 @@ bool MainWindow::fileIsValid(QString fileName)
 
 void MainWindow::getNumberOfSteps()
 {
-    QFile numbofsteps("LabWorksSem2//LabWork2//Lab2//Files//NumberOfSteps.txt");
+    QFile numbofsteps(numberOfStepsFile);
     if(!numbofsteps.open(QIODevice::ReadOnly)) //open file
     {
         qDebug("Not open");
@@ -234,7 +234,7 @@ void MainWindow::on_prevPushButton_clicked()
     QString filePath = "";
     if(fileNumber > 9) filePath = QString::number(fileNumber)+".png";
     else filePath = "0" + QString::number(fileNumber)+".png";
-    QString path = "LabWorksSem2//LabWork2//Lab2//Images//"+filePath;
+    QString path = imgFolder+filePath;
     if(fileNumber > 0)
     {
         setPicture(path);
@@ -243,7 +243,7 @@ void MainWindow::on_prevPushButton_clicked()
     if(it) delete it;
 
     //set the current iterator to be the previous step
-    it = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Images//", QDirIterator::NoIteratorFlags);
+    it = new QDirIterator(imgFolder, QDirIterator::NoIteratorFlags);
     while(path != it->filePath() && it->hasNext())
     {
         it->next();
@@ -275,14 +275,14 @@ void MainWindow::on_algorithm_currentIndexChanged(int index)
     setPicture("");
     ui->resultTextBrowser->setText("");
     ui->visualizePushButton->setEnabled(false);
-    QFile file("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
+    QFile file(outputFile);
     file.open(QIODevice::WriteOnly);
     file.close();
 }
 
 void MainWindow::createImage()
 {
-    QDirIterator *itFiles = new QDirIterator("LabWorksSem2//LabWork2//Lab2//Files", QDirIterator::NoIteratorFlags);
+    QDirIterator *itFiles = new QDirIterator(fileFolder, QDirIterator::NoIteratorFlags);
 
     int i = 0;
     int localNumberOfSteps = 1;
@@ -406,7 +406,7 @@ void MainWindow::on_stopPushButton_clicked()
 
 void MainWindow::setOutput()
 {
-    QFile output("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
+    QFile output(outputFile);
 
     if(!output.open(QIODevice::ReadOnly)) //open file
     {
@@ -434,7 +434,7 @@ void MainWindow::clearOutput()
     clearLabels();
     ui->resultTextBrowser->setText("");
 
-    QFile file("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
+    QFile file(outputFile);
     file.open(QIODevice::WriteOnly);
     file.close();
 }

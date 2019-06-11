@@ -38,6 +38,7 @@ HEADERS += \
     writeinfile.h \
     GraphAlgorithms/graph.h \
     GraphAlgorithms/graph_algorithm.h \
+    constants.h
 
 FORMS += \
         mainwindow.ui \

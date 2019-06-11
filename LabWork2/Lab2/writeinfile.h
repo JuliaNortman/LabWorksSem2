@@ -2,6 +2,8 @@
 #define WRITEINFILE_H
 
 #include "GraphAlgorithms/graph.h"
+#include "constants.h"
+
 
 #include <QObject>
 #include <QVector>
@@ -42,6 +44,11 @@ class WriteInFile
 protected:
     int numberOfSteps = 0; //number of steps in the algorithm
     Graph g; //graph
+
+    const QString numberOfStepsFile = QCoreApplication::applicationDirPath()+"//Files//NumberOfSteps.txt";
+    const QString imgFolder = QCoreApplication::applicationDirPath()+"//Images//";
+    const QString fileFolder = QCoreApplication::applicationDirPath()+"//Files//";
+    const QString outputFile = QCoreApplication::applicationDirPath()+"//Files//output.txt";
 public:
     WriteInFile(const Graph& G);
     virtual ~WriteInFile() = default;

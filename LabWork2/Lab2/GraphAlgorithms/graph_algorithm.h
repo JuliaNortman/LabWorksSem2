@@ -31,11 +31,14 @@ const QVector<QString> COLORS_VECTOR{"#CA3434", "#E18A27", "#F6EE0D", "#11F60D",
 class GraphAlgorithm
 {
 protected:
+
+    const QString outputFile = QCoreApplication::applicationDirPath()+"//Files//output.txt";
+
     Graph graphInput;
     int s = 0; //source
     WriteInFile *writeFileHandler; //=NULL;
     void setSourceVertex(int source);
-    const QString pathToFileResult = "LabWorksSem2//LabWork2//Lab2//Files//output.txt";
+    const QString pathToFileResult = outputFile;
 public:
     GraphAlgorithm(Graph &graph) : graphInput(graph){}
     virtual ~GraphAlgorithm() = default;

@@ -3,6 +3,7 @@
 
 #include "matrix.h"
 #include "writeinfile.h"
+#include "constants.h"
 #include "GraphAlgorithms/graph_algorithm.h"
 
 #include <QMainWindow>
@@ -41,6 +42,12 @@ private:
     int algoNumber = 0; //index of the chosen algorithm from the combo box
     int numberOfSteps = -1; //number of images to illustrate certain algo work
     QLabel* graphLabel = nullptr; //label for show image
+
+
+    const QString numberOfStepsFile = QCoreApplication::applicationDirPath()+"//Files//NumberOfSteps.txt";
+    const QString imgFolder = QCoreApplication::applicationDirPath()+"//Images//";
+    const QString fileFolder = QCoreApplication::applicationDirPath()+"//Files//";
+    const QString outputFile = QCoreApplication::applicationDirPath()+"//Files//output.txt";
 
 private slots:
     /**
