@@ -57,8 +57,17 @@
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
    </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAsNeeded</enum>
+   </property>
+   <property name="sizeAdjustPolicy">
+    <enum>QAbstractScrollArea::AdjustToContents</enum>
+   </property>
    <property name="widgetResizable">
     <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
    <widget class="QWidget" name="scrollAreaWidgetContents">
     <property name="geometry">

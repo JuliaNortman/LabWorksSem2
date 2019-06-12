@@ -6,6 +6,7 @@ GraphOutput::GraphOutput(QWidget *parent) :
     ui(new Ui::GraphOutput)
 {
     ui->setupUi(this);
+    setWindowTitle("Graph");
 
     graphLabel = new QLabel;
     ui->scrollGraph->setWidget(graphLabel);
@@ -33,6 +34,7 @@ void GraphOutput::setPicture(QString path)
 
 void GraphOutput::illustrate()
 {
+    ui->stopPushButton->setEnabled(true);
     if(it) delete it; //delete previuos iterator
     it = new QDirIterator(imgFolder, QDirIterator::NoIteratorFlags);//set iterator
     changeAutomatically = true; //in order to cahnge pictures on timer
@@ -47,7 +49,17 @@ void GraphOutput::illustrate()
             ui->nextPushButton->show();
 
             if(!fileIsValid(it->fileName())) break;
+
+            \
             setPicture(str);
+
+
+            /*int height = 0, width = 0;
+            graphLabel->pixmap()->height() < 361 ? height = graphLabel->pixmap()->height()+10 : height = 371;
+            graphLabel->pixmap()->width() < 491 ? width = graphLabel->pixmap()->width()+10 : height = 500;
+            ui->scrollGraph->resize(width, height);*/
+
+
             QTime time;
             time.start();
             for(;time.elapsed() < 800;) {
@@ -56,6 +68,7 @@ void GraphOutput::illustrate()
         }
         ++i;
     }
+    ui->stopPushButton->setEnabled(false);
 }
 
 bool GraphOutput::fileIsValid(QString fileName)

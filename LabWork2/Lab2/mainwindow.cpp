@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setWindowIcon(QIcon(icon));
+    setWindowTitle("GraphAlgoVisualizator");
     //qDebug(QCoreApplication::applicationDirPath().toStdString().c_str());
 
     //initialize labels with empty strings
@@ -149,6 +151,7 @@ void MainWindow::on_weightedGraph_stateChanged(int arg1)
 
 void MainWindow::on_Run_clicked()
 {
+    ui->loading->show();
     Graph g(graph, directed, weighted);
 
     //setPicture("");
@@ -156,15 +159,24 @@ void MainWindow::on_Run_clicked()
 
     algoExecute();
 
-    ui->visualizePushButton->setEnabled(false);
+    QPixmap image(loading);
+    ui->loading->setPixmap(image);
+    ui->loading->setScaledContents(true);
+
+
     QTime time;
     time.start();
     for(;time.elapsed() < 2000;) {
         QApplication::processEvents(nullptr);
     }
-    ui->visualizePushButton->setEnabled(true);
+    ui->loading->hide();
+
+    GraphOutput gOutput;
+    gOutput.exec();
+
     //setOutput();
 }
+
 
 void MainWindow::algoExecute()
 {
@@ -233,24 +245,16 @@ void MainWindow::algoExecute()
 
     //getNumberOfSteps(); ///////unused
 
-    ui->visualizePushButton->setEnabled(true);
+    //ui->visualizePushButton->setEnabled(true);
+
 }
 
-void MainWindow::on_visualizePushButton_clicked()
-{
-    setWindowSize();
-    //ui->stopPushButton->setEnabled(true);
-    //illustrate();
-    GraphOutput gOutput;
-    gOutput.exec();
-}
 
 
 
 void MainWindow::clearOutput()
 {
     ui->Run->setEnabled(false);
-    ui->visualizePushButton->setEnabled(false);
     //ui->prevPushButton->hide();
    // ui->nextPushButton->hide();
     //ui->stopPushButton->hide();
@@ -295,8 +299,7 @@ void MainWindow::on_algorithm_currentIndexChanged(int index)
 {
     algoNumber = index;
 
-    ui->visualizePushButton->setEnabled(false);
-    QFile file("LabWorksSem2//LabWork2//Lab2//Files//output.txt");
+    QFile file(outputFile);
     file.open(QIODevice::WriteOnly);
     file.close();
 }

@@ -14,6 +14,7 @@
 #include <QDirIterator>
 #include <QTimer>
 #include <QMessageBox>
+#include <QMovie>
 
 namespace Ui {
 class MainWindow;
@@ -53,8 +54,12 @@ private:
 
     QLabel* graphLabel = nullptr; //label for show image ////unused-???
 
+    QMovie *mo = nullptr;
+
 
     const QString numberOfStepsFile = QCoreApplication::applicationDirPath()+"//Files//NumberOfSteps.txt";
+    const QString icon = QCoreApplication::applicationDirPath()+"//Images//icon.png";
+    const QString loading = QCoreApplication::applicationDirPath()+"//Images//loading.png";
     const QString imgFolder = QCoreApplication::applicationDirPath()+"//Images//";
     const QString fileFolder = QCoreApplication::applicationDirPath()+"//Files//";
     const QString outputFile = QCoreApplication::applicationDirPath()+"//Files//output.txt";
@@ -142,10 +147,6 @@ private slots:
      */
     void algoExecute();
 
-    /**
-     * @brief call illustrate function
-     */
-    void on_visualizePushButton_clicked();
 
     /**
      * @brief check if current file has to be used in the visualization
@@ -185,6 +186,7 @@ private slots:
      * @brief change window size according to the number of vertexes
      */
     void setWindowSize();
+
 };
 
 #endif // MAINWINDOW_H

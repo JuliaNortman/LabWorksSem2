@@ -18,6 +18,7 @@ Matrix::Matrix(const int &dim, QWidget *parent) :
 {
     //set window size and style
     ui->setupUi(this);
+    setWindowTitle("Matrix");
     setFixedSize(30 + 41*n + 30, 34*n + 100);
     ui->OKPushButton->move(30+41*n-80, 34*n+100-28);
     ui->error->move(30+20*n-48, 3);
