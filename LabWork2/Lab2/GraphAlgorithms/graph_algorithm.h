@@ -31,18 +31,17 @@ const QVector<QString> COLORS_VECTOR{"#CA3434", "#E18A27", "#F6EE0D", "#11F60D",
 class GraphAlgorithm
 {
 protected:
-
     const QString outputFile = QCoreApplication::applicationDirPath()+"//Files//output.txt";
 
     Graph graphInput;
     int s = 0; //source
     WriteInFile *writeFileHandler; //=NULL;
-    void setSourceVertex(int source);
-    const QString pathToFileResult = outputFile;
+    const QString pathToFileResult = "C://QTProjectsMy//gAlgo//output.txt";
 public:
     GraphAlgorithm(Graph &graph) : graphInput(graph){}
     virtual ~GraphAlgorithm() = default;
     virtual void executeAlgorithm() = 0;
+    void setSourceVertex(int source);
 };
 
 /**
@@ -177,6 +176,8 @@ public:
     }
     void executeAlgorithm();
 private:
+
+
     //FRIEND_TEST(GraphAlgorithm, ShortestPathesTest);
 };
 
@@ -205,4 +206,47 @@ private:
     //FRIEND_TEST(GraphAlgorithm, MinimalSpanningTreeTest);
 };
 
+
+/**
+* Derived from GraphAlgorithm class.
+* Applied only to directed acyclic graphs.
+* Use Kahn's algorithm.
+*/
+class TopologicalSortingKahnAlgorithm : public GraphAlgorithm
+{
+public:
+    TopologicalSortingKahnAlgorithm(Graph &graph) : GraphAlgorithm (graph)
+    {
+        writeFileHandler = new WriteVertexInFile (graph);
+        setSourceVertex(0);
+    }
+
+    void executeAlgorithm();
+};
+
+
+/**
+* Derived from GraphAlgorithm class.
+* Applied only to oriented graphs.
+* Use Ford-Fulkerson algorithm.
+* Throws an exception of QString type in case of use inappropriate graph to executeAlgorithm function.
+*/
+class MaximalFlowFromSource: public GraphAlgorithm
+{
+private:
+    bool bfs(Graph &graphInput, int s, int t, QVector<int> &parent);
+public:
+    MaximalFlowFromSource (Graph &graph, int source = 0) : GraphAlgorithm (graph)
+    {
+        writeFileHandler = new WriteVertexInFile (graph);
+        setSourceVertex(source);
+    }
+    void executeAlgorithm();
+private:
+    //FRIEND_TEST(GraphAlgorithm, BFSTest);
+};
+
+
 #endif // GRAPH_ALGORITHM_H
+
+
