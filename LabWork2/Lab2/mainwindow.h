@@ -14,7 +14,7 @@
 #include <QDirIterator>
 #include <QTimer>
 #include <QMessageBox>
-#include <QMovie>
+#include <QSplashScreen>
 
 namespace Ui {
 class MainWindow;

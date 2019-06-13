@@ -135,6 +135,19 @@
     <string>Start</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="downloadGifPushButton">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>480</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Download GIF</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

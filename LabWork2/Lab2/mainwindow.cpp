@@ -160,9 +160,10 @@ void MainWindow::on_Run_clicked()
     algoExecute();
 
     QPixmap image(loading);
-    ui->loading->setPixmap(image);
-    ui->loading->setScaledContents(true);
-
+    //ui->loading->setPixmap(image);
+    //ui->loading->setScaledContents(true);
+    QSplashScreen splash(image);
+    splash.show();
 
     QTime time;
     time.start();
@@ -170,6 +171,7 @@ void MainWindow::on_Run_clicked()
         QApplication::processEvents(nullptr);
     }
     ui->loading->hide();
+    splash.finish(this);
 
     GraphOutput gOutput;
     gOutput.exec();

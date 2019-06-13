@@ -6,6 +6,8 @@
 #include <QDirIterator>
 #include <QTime>
 #include <QCoreApplication>
+#include <QFileDialog>
+#include <windows.h>
 
 namespace Ui {
 class GraphOutput;
@@ -34,6 +36,8 @@ private slots:
 
     void on_startPushButton_clicked();
 
+    void on_downloadGifPushButton_clicked();
+
 private:
     Ui::GraphOutput *ui;
     QLabel* graphLabel = nullptr;
@@ -46,6 +50,7 @@ private:
     const QString imgFolder = QCoreApplication::applicationDirPath()+"//Images//";
     const QString fileFolder = QCoreApplication::applicationDirPath()+"//Files//";
     const QString outputFile = QCoreApplication::applicationDirPath()+"//Files//output.txt";
+    const QString ffmpegPath = QCoreApplication::applicationDirPath()+"//Ffmpeg//bin//ffmpeg.exe";
 };
 
 #endif // GRAPHOUTPUT_H
