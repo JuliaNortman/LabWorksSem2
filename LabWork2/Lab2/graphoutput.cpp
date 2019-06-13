@@ -9,6 +9,7 @@ GraphOutput::GraphOutput(QWidget *parent) :
     setWindowTitle("Graph");
 
     graphLabel = new QLabel;
+    graphLabel->setAlignment(Qt::AlignCenter);
     ui->scrollGraph->setWidget(graphLabel);
 
     getNumberOfSteps();
@@ -17,11 +18,13 @@ GraphOutput::GraphOutput(QWidget *parent) :
     ui->stopPushButton->hide();
     ui->prevPushButton->hide();
     ui->nextPushButton->hide();
-    //illustrate();
+    ui->downloadGifPushButton->hide();
 }
 
 GraphOutput::~GraphOutput()
 {
+    if(graphLabel) delete graphLabel;
+    if(it) delete it;
     delete ui;
 }
 
@@ -50,15 +53,7 @@ void GraphOutput::illustrate()
 
             if(!fileIsValid(it->fileName())) break;
 
-            \
             setPicture(str);
-
-
-            /*int height = 0, width = 0;
-            graphLabel->pixmap()->height() < 361 ? height = graphLabel->pixmap()->height()+10 : height = 371;
-            graphLabel->pixmap()->width() < 491 ? width = graphLabel->pixmap()->width()+10 : height = 500;
-            ui->scrollGraph->resize(width, height);*/
-
 
             QTime time;
             time.start();

@@ -11,9 +11,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setFixedSize(475, 623);
     setWindowIcon(QIcon(icon));
     setWindowTitle("GraphAlgoVisualizator");
-    //qDebug(QCoreApplication::applicationDirPath().toStdString().c_str());
 
     //initialize labels with empty strings
     for(int i = 0; i < MAXSIZE; ++i)
@@ -27,12 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     }
 
-    //unused - ????
-    //graphLabel = new QLabel;
-    //ui->scrollGraph->setWidget(graphLabel);
-
-
-    //hiding buttons
     clearOutput();
 }
 
@@ -58,19 +52,12 @@ void MainWindow::on_enterMatrixPushButton_clicked()
 }
 
 
-void MainWindow::on_numberOfVertexes_currentIndexChanged(int index)
-{
-    //set current number of vertexes
-    n = index+2;
-
-    //hide buttons and clear previous output
-    clearOutput();
-}
 
 void MainWindow::printMatrix(QVector<QVector<int>> matrix)
 {
     clearOutput();
     ui->Run->setEnabled(true);
+    ui->yourMatrixLabel->show();
     graph = matrix;
     clearLabels(); //clear previous text
     for(int i = 0; i < n; ++i)
@@ -102,7 +89,7 @@ void MainWindow::on_randomButton_clicked()
     graph.resize(n);
     for(int i = 0; i < n; ++i) graph[i].resize(n);
 
-    qsrand(QDateTime::currentMSecsSinceEpoch());
+    qsrand(static_cast<unsigned int>(QDateTime::currentMSecsSinceEpoch()));
     for(int i = 0; i < n; ++i)
     {
         for(int j = 0; j < n; ++j)
@@ -151,17 +138,12 @@ void MainWindow::on_weightedGraph_stateChanged(int arg1)
 
 void MainWindow::on_Run_clicked()
 {
-    ui->loading->show();
     Graph g(graph, directed, weighted);
 
-    //setPicture("");
-    //ui->resultTextBrowser->setText("");
 
     algoExecute();
 
     QPixmap image(loading);
-    //ui->loading->setPixmap(image);
-    //ui->loading->setScaledContents(true);
     QSplashScreen splash(image);
     splash.show();
 
@@ -170,13 +152,11 @@ void MainWindow::on_Run_clicked()
     for(;time.elapsed() < 2000;) {
         QApplication::processEvents(nullptr);
     }
-    ui->loading->hide();
     splash.finish(this);
 
     GraphOutput gOutput;
     gOutput.exec();
 
-    //setOutput();
 }
 
 
@@ -185,18 +165,19 @@ void MainWindow::algoExecute()
     if(algo) delete algo;
 
     Graph G(graph, directed, weighted);
+    int source = ui->sourceVertex->value();
 
     //choose what algo to be executed
     switch (algoNumber)
     {
     case 0:
     {
-        algo = new BFS(G);
+        algo = new BFS(G, source);
         break;
     }
     case 1:
     {
-        algo = new DFS(G);
+        algo = new DFS(G, source);
         break;
     }
     case 2:
@@ -216,12 +197,22 @@ void MainWindow::algoExecute()
     }
     case 5:
     {
-        algo = new ShortestPathes(G);
+        algo = new ShortestPathes(G, source);
         break;
     }
     case 6:
     {
         algo = new MinimalSpanningTree(G);
+        break;
+    }
+    case 7:
+    {
+        //algo = new TopologicalSortingKahnAlgorithm(G);
+        break;
+    }
+    case 8:
+    {
+        //algo = new MaximalFlowFromSource(G, source);
         break;
     }
     default:
@@ -243,12 +234,6 @@ void MainWindow::algoExecute()
         QString str = "Something went wrong! Please try again later";
         QMessageBox::critical(nullptr, "Critical", str);
     }
-
-
-    //getNumberOfSteps(); ///////unused
-
-    //ui->visualizePushButton->setEnabled(true);
-
 }
 
 
@@ -257,51 +242,34 @@ void MainWindow::algoExecute()
 void MainWindow::clearOutput()
 {
     ui->Run->setEnabled(false);
-    //ui->prevPushButton->hide();
-   // ui->nextPushButton->hide();
-    //ui->stopPushButton->hide();
-    //setPicture("");
     clearLabels();
-   // ui->resultTextBrowser->setText("");
+    ui->yourMatrixLabel->hide();
 
     QFile file(outputFile);
     file.open(QIODevice::WriteOnly);
     file.close();
 }
 
-void MainWindow::setWindowSize()
-{
-    /*if(n > 5)
-    {
-        setFixedSize(950, 660);
-        ui->stopPushButton->move(100, 80+40+250+200);
-        ui->prevPushButton->move(180, 80+40+250+200);
-        ui->nextPushButton->move(260, 80+40+250+200);
-        //ui->graphLabel->setFixedSize(490, 450);
-    }
-    else
-    {
-        setFixedSize(750, 530);
-        ui->stopPushButton->move(384, 80+40+350);
-        ui->prevPushButton->move(484, 80+40+350);
-        ui->nextPushButton->move(584, 80+40+350);
-        ui->scrollGraph->setFixedSize(290, 250);
-    }
-    if(n == 2 && (graph[0][1] || graph[1][0]))
-    {
-        ui->scrollGraph->setFixedSize(190, 235);
-    }
-    else if(n == 2)
-    {
-        ui->scrollGraph->setFixedSize(235, 190);
-    }*/
-}
 
 void MainWindow::on_algorithm_currentIndexChanged(int index)
 {
     algoNumber = index;
 
+    ui->sourceVertex->setEnabled(false);
+
+    if(algoNumber == 8 || algoNumber == 5 || algoNumber == 1 || algoNumber == 0)
+    {
+        ui->sourceVertex->setEnabled(true);
+    }
+
     QFile file(outputFile);
     file.open(QIODevice::WriteOnly);
     file.close();
+}
+
+void MainWindow::on_numberOfVertexes_valueChanged(int arg1)
+{
+    n = arg1;
+    ui->sourceVertex->setMaximum(n-1);
+    clearOutput();
 }

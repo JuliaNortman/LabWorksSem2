@@ -39,8 +39,9 @@ void BFS::executeAlgorithm()
     QQueue<int> queue;
     //visited[source] = true;
     //queue.push_back(source);
-    for (int i=0; i<sizeGraph;i++)
+    for (int j=0; j<sizeGraph;j++)
     {
+        int i = (j + source)%sizeGraph;
 
         if (!visited[i])
         {

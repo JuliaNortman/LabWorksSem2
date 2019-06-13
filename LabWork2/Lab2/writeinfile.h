@@ -2,12 +2,13 @@
 #define WRITEINFILE_H
 
 #include "GraphAlgorithms/graph.h"
-#include "constants.h"
 
 
 #include <QObject>
 #include <QVector>
 #include <QFile>
+#include <QApplication>
+#include <QCoreApplication>
 
 
 /**

@@ -1,7 +1,6 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "constants.h"
 
 #include <QDialog>
 #include <QVector>
