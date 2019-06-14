@@ -7,7 +7,6 @@ Graph::Graph(const QVector<QVector<int>> &graph, bool oriented, bool weighted)
     this->weighted = weighted;
 /*
     if (!isCorrectGraph())
-
     {
         correctGraph();
     }
@@ -109,13 +108,12 @@ void Graph::correctGraph()
 
 bool Graph::hasCycle() const
 {
+    /*
     int source = 0; // get source vertex
     int sizeGraph = graph.size(); //get size of graph
-
     QVector<bool> visited(sizeGraph, false); //visited vertices
     QStack<int> stack; //stack of current vertices to concern
     QVector<int> used(sizeGraph, false); //set of used vetrices
-
     bool notAllVertUsed = true;
     stack.push(source);
     while(notAllVertUsed)
@@ -125,7 +123,6 @@ bool Graph::hasCycle() const
             source = stack.top();
             stack.pop();
             used[source] = true;
-
             if (!visited[source])
             {
                 visited[source] = true;
@@ -134,7 +131,6 @@ bool Graph::hasCycle() const
             {
                 return true;
             }
-
             for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
             {
                 if (graph[source][adj_v] != NO_EDGE) //if an edge exists
@@ -151,6 +147,81 @@ bool Graph::hasCycle() const
                 }
             }
         }
+        //find any still not used vertes (not from previous connectivity component)
+        int indNotUsedVert = 0;
+        for (; indNotUsedVert<sizeGraph; indNotUsedVert++)
+        {
+            if (!used[indNotUsedVert]) break;
+        }
+        if (indNotUsedVert==sizeGraph)
+        {
+            return false;
+        }
+        stack.push(indNotUsedVert);
+    }
+    return false;
+    */
+    int source = 0; // get source vertex
+    int sizeGraph = graph.size(); //get size of graph
+
+    QVector<bool> visited(sizeGraph, false); //visited vertices
+    QStack<int> stack; //stack of current vertices to concern
+    QVector<int> used(sizeGraph, false); //set of used vetrices
+    QVector<int> componentOfVertex(sizeGraph, -1);
+
+    QVector<int> previous(sizeGraph, -1);
+    bool notAllVertUsed = true;
+    stack.push(source);
+
+    int component = 0;
+    while(notAllVertUsed)
+    {
+        bool newComponent = true;
+        int previousSource = -1;
+
+        while(!stack.empty())
+        {
+            source = stack.top();
+            stack.pop();
+            used[source] = true;
+            componentOfVertex[source] = component;
+
+            if (!visited[source])
+            {
+                visited[source] = true;
+            }
+            else //has cycle
+            {
+                for (int i=0; i<sizeGraph; i++)
+                {
+                    if ((graph[source][i] != NO_EDGE) && (previous[source]!=i) && visited[i])
+                    {
+                       return true;
+                    }
+                }
+            }
+
+            for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+            {
+                if (graph[source][adj_v] != NO_EDGE) //if an edge exists
+                {
+                    if (!visited[adj_v]) // if still not visited
+                    {
+                        stack.push(adj_v);
+                        previous[adj_v] = source;
+                    }
+                    else if (visited[adj_v] && oriented && (componentOfVertex[source]==componentOfVertex[adj_v])
+                             && (previous[source]==previousSource)) //cycle found
+                    {
+                        return true;
+                    }
+                }
+            }
+            newComponent = false;
+            previousSource = source;
+        }
+
+        component++;
 
         //find any still not used vertes (not from previous connectivity component)
         int indNotUsedVert = 0;
@@ -160,6 +231,7 @@ bool Graph::hasCycle() const
         }
         if (indNotUsedVert==sizeGraph)
         {
+            notAllVertUsed = false;
             return false;
         }
         stack.push(indNotUsedVert);
@@ -304,8 +376,3 @@ bool Graph::isConnected()
 
     //return true;
 }
-
-
-
-
-

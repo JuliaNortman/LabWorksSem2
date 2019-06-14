@@ -41,31 +41,31 @@ void BFS::executeAlgorithm()
     //queue.push_back(source);
     for (int j=0; j<sizeGraph;j++)
     {
-        int i = (j + source)%sizeGraph;
+        int i = (j + s)%sizeGraph;
 
         if (!visited[i])
         {
-            if (i == s){visited[s] = true;}
-           queue.push_back(i);
-        while(!queue.empty())
-        {
-            source = queue.front();
-            BFSTraverseResult.push_back(source);
-            writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
-            //std::cout << source << " ";
-            queue.pop_front();
-            for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+            /*if (i == s)*/visited[i] = true;
+            queue.push_back(i);
+            while(!queue.empty())
             {
-                if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
+                source = queue.front();
+                BFSTraverseResult.push_back(source);
+                writeFileHandler->write(new Vertex(source, COLORS_VECTOR[color]));
+
+                queue.pop_front();
+                for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
                 {
-                    if (!visited[adj_v]) // if still not visited
+                    if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
                     {
-                        visited[adj_v] = true;
-                        queue.push_back(adj_v);
+                        if (!visited[adj_v]) // if still not visited
+                        {
+                            visited[adj_v] = true;
+                            queue.push_back(adj_v);
+                        }
                     }
                 }
             }
-        }
         }
     }
 
@@ -102,8 +102,9 @@ void DFS::executeAlgorithm()
     QVector<bool> visited(sizeGraph, false);
     QStack<int> stack;
 
-    for (int i = 0; i<sizeGraph; i++)
+    for (int j = 0; j<sizeGraph; j++)
     {
+        int i=(j+s)%sizeGraph;
         if (!visited[i])
         {
             stack.push(i);
@@ -329,98 +330,6 @@ void ColorGraph::executeAlgorithm()
     file.close();
 }
 
-void DetectCycle::executeAlgorithm()
-{
-    int source = s; // get source vertex
-    int sizeGraph = graphInput.graph.size(); //get size of graph
-
-    QVector<bool> visited(sizeGraph, false); //visited vertices
-    QStack<int> stack; //stack of current vertices to concern
-    QVector<int> used(sizeGraph, false); //set of used vetrices
-
-    QFile file (pathToFileResult);
-    file.open(QIODevice::WriteOnly); //open file
-
-    int color = 0; // used as color identifier
-
-    QVector<int> previous(sizeGraph, -1);
-    bool notAllVertUsed = true;
-    stack.push(source);
-    while(notAllVertUsed)
-    {
-        bool newComponent = true;
-        int previousSource = -1;
-
-        while(!stack.empty())
-        {
-            source = stack.top();
-            stack.pop();
-            used[source] = true;
-
-            if (!visited[source])
-            {
-                visited[source] = true;
-                if (!newComponent)
-                {
-                    writeFileHandler->write(new Edge(previous[source], source, COLORS_VECTOR[color]));
-                    file.write((QString::number(previous[source]) + "--" + QString::number(source)+ "\n").toStdString().c_str());
-                }
-            }
-            else //has cycle
-            {
-                for (int i=0; i<sizeGraph; i++)
-                {
-                    if ((graphInput.graph[source][i] != graphInput.NO_EDGE) && (previous[source]!=i) && visited[i])
-                    {
-                       writeFileHandler->write(new Edge(source, i, COLORS_VECTOR[++color]));
-                       file.write((QString::number(source) +"--"+ QString::number(i) + "\nCYCLE FOUND").toStdString().c_str());
-                       file.close();
-                       return;
-                    }
-                }
-            }
-
-            for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
-            {
-                if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
-                {
-                    if (!visited[adj_v]) // if still not visited
-                    {
-                        stack.push(adj_v);
-                        previous[adj_v] = source;
-                    }
-                    else if (visited[adj_v] && graphInput.oriented) //cycle found
-                    {
-                        writeFileHandler->write(new Edge(source, adj_v, COLORS_VECTOR[++color]));
-                        file.write((QString::number(source) + "--" + QString::number(adj_v) + "\nCYCLE FOUND").toStdString().c_str());
-                        file.close();
-                        return;
-                    }
-                }
-            }
-            newComponent = false;
-            previousSource = source;
-        }
-
-        color++; //change color
-
-        //find any still not used vertes (not from previous connectivity component)
-        int indNotUsedVert = 0;
-        for (; indNotUsedVert<sizeGraph; indNotUsedVert++)
-        {
-            if (!used[indNotUsedVert]) break;
-        }
-        if (indNotUsedVert==sizeGraph)
-        {
-            notAllVertUsed = false;
-            //return;
-        }
-        stack.push(indNotUsedVert);
-    }
-
-    file.write("\n| CYCLE NOT DETECTED |");
-    file.close();
-}
 
 void ShortestPathes::executeAlgorithm()
 {
@@ -459,9 +368,41 @@ void ShortestPathes::executeAlgorithm()
             }
         }
     }
-    else
+    else //use Bellman-Ford algorithm for weighted graphs
     {
-        throw "NOT APPLIED TO SUCH A GRAPH";
+        //preparing graph
+        for(int i=0; i<sizeGraph; i++)
+            for (int j=0; j<sizeGraph; j++)
+                if (graphInput.graph[i][j] == graphInput.NO_EDGE)
+                {
+                    graphInput.graph[i][j] =  graphInput.INF;
+                }
+
+        for (int i=1; i<=sizeGraph-1; i++)
+        {
+            for (int j=0; j<sizeGraph; j++)
+            {
+                for(int k=0; k<sizeGraph; k++)
+                {
+                    if (j!=k && graphInput.graph[j][k]!=graphInput.INF)
+                    {
+                        if (shortestDistancesFromS[j] != graphInput.INF && shortestDistancesFromS[j] + graphInput.graph[j][k] < shortestDistancesFromS[k])
+                        {
+                            shortestDistancesFromS[k] = shortestDistancesFromS[j] + graphInput.graph[j][k];
+                        }
+                    }
+                }
+            }
+        }
+
+        //visualization
+        writeFileHandler->write(new Vertex(s, COLORS_VECTOR[color], 0)); //writing source vertex with distance 0
+        for (int i=0; i<sizeGraph; i++)
+        {
+            if (shortestDistancesFromS[i] == graphInput.INF || i==s) continue;
+            writeFileHandler->write(new Vertex(i, COLORS_VECTOR[color], shortestDistancesFromS[i]));
+        }
+
     }
 
     //preparing and writing result file
@@ -480,6 +421,25 @@ void ShortestPathes::executeAlgorithm()
         return;
     }
     file.write(result.toStdString().c_str());
+
+    if (graphInput.weighted)
+    {
+        //check for negative cycle
+        for (int i=0; i<sizeGraph; i++)
+        {
+            for (int j=0; j<sizeGraph; j++)
+            {
+                if (j!=i && graphInput.graph[i][j]!=graphInput.INF)
+                {
+                    if (shortestDistancesFromS[i]!=graphInput.INF && shortestDistancesFromS[i] + graphInput.graph[i][j] < shortestDistancesFromS[j])
+                    {
+                        file.write("NEGATIVE CYCLE FOUND, SOME SHORTEST PATHES ARE INCORRECT");
+                    }
+                }
+            }
+        }
+    }
+
     file.close();
 }
 
@@ -550,3 +510,271 @@ void MinimalSpanningTree::executeAlgorithm()
     file.close();
 }
 
+
+
+//-------------------------------------------
+void DetectCycle::executeAlgorithm()
+{
+    int source = s; // get source vertex
+    int sizeGraph = graphInput.graph.size(); //get size of graph
+
+    QVector<bool> visited(sizeGraph, false); //visited vertices
+    QStack<int> stack; //stack of current vertices to concern
+    QVector<int> used(sizeGraph, false); //set of used vetrices
+    QVector<int> componentOfVertex(sizeGraph, -1);
+
+    QFile file (pathToFileResult);
+    file.open(QIODevice::WriteOnly); //open file
+
+    int color = 0; // used as color identifier
+
+    QVector<int> previous(sizeGraph, -1);
+    bool notAllVertUsed = true;
+    stack.push(source);
+
+    int component = 0;
+    while(notAllVertUsed)
+    {
+        bool newComponent = true;
+        int previousSource = -1;
+
+        while(!stack.empty())
+        {
+            source = stack.top();
+            stack.pop();
+            used[source] = true;
+            componentOfVertex[source] = component;
+
+            if (!visited[source])
+            {
+                visited[source] = true;
+                if (!newComponent)
+                {
+                    writeFileHandler->write(new Edge(previous[source], source, COLORS_VECTOR[color]));
+                    file.write((QString::number(previous[source]) + "--" + QString::number(source)+ "\n").toStdString().c_str());
+                }
+            }
+            else //has cycle
+            {
+                for (int i=0; i<sizeGraph; i++)
+                {
+                    if ((graphInput.graph[source][i] != graphInput.NO_EDGE) && (previous[source]!=i) && visited[i])
+                    {
+                       writeFileHandler->write(new Edge(source, i, COLORS_VECTOR[++color]));
+                       file.write((QString::number(source) +"--"+ QString::number(i) + "\nCYCLE FOUND").toStdString().c_str());
+                       file.close();
+                       return;
+                    }
+                }
+            }
+
+            for (int adj_v = 0; adj_v < sizeGraph; adj_v++)
+            {
+                if (graphInput.graph[source][adj_v] != graphInput.NO_EDGE) //if an edge exists
+                {
+                    if (!visited[adj_v]) // if still not visited
+                    {
+                        stack.push(adj_v);
+                        previous[adj_v] = source;
+                    }
+                    else if (visited[adj_v] && graphInput.oriented && (componentOfVertex[source]==componentOfVertex[adj_v])
+                             && (previous[source]==previousSource)) //cycle found
+                    {
+                        writeFileHandler->write(new Edge(source, adj_v, COLORS_VECTOR[++color]));
+                        file.write((QString::number(source) + "--" + QString::number(adj_v) + "\nCYCLE FOUND").toStdString().c_str());
+                        file.close();
+                        return;
+                    }
+                }
+            }
+            newComponent = false;
+            previousSource = source;
+        }
+
+        color++; //change color
+        component++;
+
+        //find any still not used vertes (not from previous connectivity component)
+        int indNotUsedVert = 0;
+        for (; indNotUsedVert<sizeGraph; indNotUsedVert++)
+        {
+            if (!used[indNotUsedVert]) break;
+        }
+        if (indNotUsedVert==sizeGraph)
+        {
+            notAllVertUsed = false;
+            //return;
+        }
+        stack.push(indNotUsedVert);
+    }
+
+    file.write("\n| CYCLE NOT DETECTED |");
+    file.close();
+}
+
+
+//works only with NOT CYCLIC DIRECTED graphs
+void TopologicalSortingKahnAlgorithm::executeAlgorithm()
+{
+    if (!graphInput.oriented)
+    {
+        const QString str = "NOT APPLIED TO SUCH A GRAPH";
+        throw str;
+    }
+    //else
+    int sizeGraph = graphInput.graph.size();
+    QVector<int> inDegree(sizeGraph, 0);
+
+    for (int u=0; u < sizeGraph; u++)
+    {
+        for (int adjV = 0; adjV < sizeGraph; adjV++)
+        {
+            if (graphInput.graph[u][adjV] != graphInput.NO_EDGE)
+            {
+                inDegree[adjV]++;
+            }
+        }
+    }
+
+      QQueue<int> q;
+      for (int i = 0; i < sizeGraph; i++)
+          if (inDegree[i] == 0)
+              q.push_back(i);
+
+       int cnt = 0;
+
+      QVector <int> top_order;
+
+      // One by one dequeue vertices from queue and enqueue
+      // adjacents if indegree of adjacent becomes 0
+      while (!q.empty())
+      {
+          int u = q.front();
+          q.pop_front();
+          top_order.push_back(u);
+
+          for (int adj = 0; adj < sizeGraph; adj++)
+          {
+              if (graphInput.graph[u][adj] != graphInput.NO_EDGE)
+              {
+                  if (--inDegree[adj] == 0)
+                      q.push_back(adj);
+              }
+          }
+          cnt++;
+      }
+
+      QFile file (pathToFileResult);
+      file.open(QIODevice::WriteOnly);
+
+      if(top_order.size() != sizeGraph)
+      {
+          file.write("GRAPH HAS A CYCLE\nAlgorithm not applied to such graphs");
+          return;
+      }
+
+      for (int i=0; i<top_order.size(); i++)
+      {
+          //std::cout<<top_order[i] << " ";
+          writeFileHandler->write(new Vertex(top_order[i], COLORS_VECTOR[0], i));
+          file.write((QString::number(top_order[i]) + " - ").toStdString().c_str());
+      }
+      file.close();
+}
+
+
+bool MaximalFlowFromSource::bfs(Graph &graphInput, int s, int t, QVector<int> &parent)
+{
+    int sizeGraph = graphInput.graph.size();
+    QVector<bool> visited (sizeGraph, false);
+
+    QQueue <int> q;
+    q.push_back(s);
+    visited[s] = true;
+    parent[s] = -1;
+
+    // Standard BFS Loop
+    while (!q.empty())
+    {
+        int u = q.front();
+        q.pop_front();
+
+        for (int v=0; v<sizeGraph; v++)
+        {
+            if (visited[v]==false && graphInput.graph[u][v] > 0)
+            {
+                q.push_back(v);
+                parent[v] = u;
+                visited[v] = true;
+            }
+        }
+    }
+
+    // If we reached sink in BFS starting from source, then return
+    // true, else false
+    return (visited[t] == true);
+}
+
+void MaximalFlowFromSource::executeAlgorithm()
+{
+    if (!graphInput.oriented)
+    {
+         const QString str = "NOT APPLIED TO SUCH A GRAPH";
+         throw str;
+    }
+
+    int sizeGraph = graphInput.graph.size();
+    QVector<int> ResultFlowFromSTodest;
+    int dest = (s+1)% sizeGraph;
+    int color = 0;
+    writeFileHandler->write(new Vertex(s, COLORS_VECTOR[color])); //colored source vertex
+    color++; //changed color
+    if (sizeGraph == 1) return;
+
+    //for each vertex start fordFulkerson algo
+    do
+    {
+        Graph *g = new Graph(graphInput.graph, graphInput.oriented, graphInput.weighted);
+        QVector<int> parent(sizeGraph);
+        int maxFlowResult = 0;
+
+        while(bfs(*g, s, dest, parent))
+        {
+            int pathFlow = graphInput.INF; //or int_max
+            for (int v=dest; v!=s; v=parent[v])
+                {
+                    int u = parent[v];
+                    pathFlow = std::min(pathFlow, g->graph[u][v]);
+                }
+
+             for (int v=dest; v != s; v=parent[v])
+                {
+                    int u = parent[v];
+                    g->graph[u][v] -= pathFlow;
+                    g->graph[v][u] += pathFlow;
+                }
+
+             // Add path flow to overall flow
+             maxFlowResult += pathFlow;
+        }
+
+        ResultFlowFromSTodest.push_back(maxFlowResult); //writing max flow from source to (s+1+iteration)%size in (iteration) cell
+                                                        //counting from zero
+        delete g; //free memory
+        writeFileHandler->write(new Vertex(dest, COLORS_VECTOR[0], maxFlowResult));
+        dest = (dest+1)%sizeGraph;
+    }
+    while(dest!=s);
+
+    //writing file
+    QFile file (pathToFileResult);
+    if(!file.open(QIODevice::WriteOnly)) //open file
+    {
+        return;
+    }
+    for (int i=0; i<sizeGraph-1; i++)
+    {
+        file.write((QString::number(s) + "->" + QString::number((s+i+1)%sizeGraph)+ " : " + QString::number(ResultFlowFromSTodest[i]) + "\n").toStdString().c_str());
+    }
+    file.close();
+}

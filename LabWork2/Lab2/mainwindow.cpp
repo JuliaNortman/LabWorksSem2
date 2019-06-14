@@ -140,24 +140,35 @@ void MainWindow::on_Run_clicked()
 {
     Graph g(graph, directed, weighted);
 
+    try
+    {
+        algoExecute();
+        QPixmap image(loading);
+        QSplashScreen splash(image);
+        splash.show();
 
-    algoExecute();
+        QTime time;
+        time.start();
+        for(;time.elapsed() < 2000;) {
+            QApplication::processEvents(nullptr);
+        }
+        splash.finish(this);
 
-    QPixmap image(loading);
-    QSplashScreen splash(image);
-    splash.show();
-
-    QTime time;
-    time.start();
-    for(;time.elapsed() < 2000;) {
-        QApplication::processEvents(nullptr);
+        GraphOutput gOutput;
+        gOutput.exec();
     }
-    splash.finish(this);
-
-    GraphOutput gOutput;
-    gOutput.exec();
-
+    catch (const QString str)
+    {
+        //call message box to show the problem
+        QMessageBox::critical(nullptr, "Critical", str);
+    }
+    catch(...)
+    {
+        QString str = "Something went wrong! Please try again later";
+        QMessageBox::critical(nullptr, "Critical", str);
+    }
 }
+
 
 
 void MainWindow::algoExecute()
@@ -207,12 +218,12 @@ void MainWindow::algoExecute()
     }
     case 7:
     {
-        //algo = new TopologicalSortingKahnAlgorithm(G);
+        algo = new TopologicalSortingKahnAlgorithm(G);
         break;
     }
     case 8:
     {
-        //algo = new MaximalFlowFromSource(G, source);
+        algo = new MaximalFlowFromSource(G, source);
         break;
     }
     default:
@@ -220,20 +231,11 @@ void MainWindow::algoExecute()
         break;
     }
     }
-    try
-    {
+   // try
+    //{
         algo->executeAlgorithm();
-    }
-    catch (const QString str)
-    {
-        //call message box to show the problem
-        QMessageBox::critical(nullptr, "Critical", str);
-    }
-    catch(...)
-    {
-        QString str = "Something went wrong! Please try again later";
-        QMessageBox::critical(nullptr, "Critical", str);
-    }
+    //}
+
 }
 
 
@@ -272,4 +274,10 @@ void MainWindow::on_numberOfVertexes_valueChanged(int arg1)
     n = arg1;
     ui->sourceVertex->setMaximum(n-1);
     clearOutput();
+}
+
+void MainWindow::on_infoPushButton_clicked()
+{
+    Info info;
+    info.exec();
 }

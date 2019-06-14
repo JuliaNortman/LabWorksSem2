@@ -5,6 +5,7 @@
 #include "writeinfile.h"
 #include "GraphAlgorithms/graph_algorithm.h"
 #include "graphoutput.h"
+#include <info.h>
 
 #include <QMainWindow>
 #include <QRandomGenerator>
@@ -120,6 +121,7 @@ private slots:
      * @param arg1 Number of vertexes
      */
     void on_numberOfVertexes_valueChanged(int arg1);
+    void on_infoPushButton_clicked();
 };
 
 #endif // MAINWINDOW_H
