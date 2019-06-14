@@ -163,6 +163,7 @@ void GraphOutput::setOutput()
 
 void GraphOutput::on_startPushButton_clicked()
 {
+    ui->downloadGifPushButton->show();
     illustrate();
 }
 
@@ -170,7 +171,7 @@ void GraphOutput::on_downloadGifPushButton_clicked()
 {
     QString whereToSave = QFileDialog::getSaveFileName(this, tr("Save File"),
                                                        "/home/untitled.gif", tr("Images (*.gif)"));
-    qDebug(whereToSave.toStdString().c_str());
+
     QString command = ffmpegPath + " -start_number 1 -framerate 1  -i "+imgFolder+"%2d.png -frames:v "+
             QString::number(numberOfSteps)+" -f gif "+whereToSave + " -y";
     WinExec(command.toStdString().c_str(), SW_HIDE);

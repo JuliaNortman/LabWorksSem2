@@ -1,0 +1,21 @@
+digraph G {
+node[shape="circle",style="filled"];
+0[color="#CA3434"];
+1[color="#CA3434"];
+2;
+3;
+4;
+5;
+0->1[arrowhead="none",label="4"];
+0->2[arrowhead="none",label="6"];
+0->3[arrowhead="none",label="8"];
+0->4[arrowhead="none",label="8"];
+0->5[arrowhead="none",label="9"];
+1->2[arrowhead="none",label="7"];
+1->3[arrowhead="none",label="5"];
+1->4[arrowhead="none",label="1"];
+1->5[arrowhead="none",label="1"];
+2->4[arrowhead="none",label="1"];
+3->5[arrowhead="none",label="9"];
+4->5[arrowhead="none",label="3"];
+}
